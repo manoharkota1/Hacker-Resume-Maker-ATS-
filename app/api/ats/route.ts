@@ -1,6 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { analyzeResumeLocally, ResumeData } from "@/lib/ats/localAnalyzer";
 
+const CORS_ORIGIN = "https://www.hackora.tech";
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": CORS_ORIGIN,
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Credentials": "true",
+};
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -82,11 +90,15 @@ export async function POST(request: NextRequest) {
       })),
     };
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, { headers: CORS_HEADERS });
   } catch {
     return NextResponse.json(
       { error: "Failed to analyze resume" },
-      { status: 500 }
+      { status: 500, headers: CORS_HEADERS }
     );
   }
+}
+
+export function OPTIONS() {
+  return new NextResponse(null, { status: 204, headers: CORS_HEADERS });
 }
