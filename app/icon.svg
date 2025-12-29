@@ -1,0 +1,14 @@
+<svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hackora-grad-ico" x1="12" y1="12" x2="52" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#10b981" />
+      <stop offset="1" stop-color="#34d399" />
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="#0f172a" />
+  <rect x="16" y="14" width="10" height="36" rx="5" fill="url(#hackora-grad-ico)" />
+  <rect x="38" y="14" width="10" height="36" rx="5" fill="url(#hackora-grad-ico)" />
+  <rect x="22" y="28" width="20" height="8" rx="4" fill="#e5f7ef" opacity="0.9" />
+  <circle cx="46" cy="42" r="11" fill="#10b981" />
+  <path d="M41 42.5L44.5 46 51 39" stroke="#0f172a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
