@@ -13,6 +13,7 @@
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/react-fontawesome": "^3.1.1",
+    "@vercel/analytics": "^1.6.1",
     "appwrite": "^21.5.0",
     "classnames": "^2.5.1",
     "keyword-extractor": "^0.0.28",
