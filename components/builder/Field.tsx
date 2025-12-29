@@ -10,9 +10,9 @@ type FieldProps = PropsWithChildren<{
 export function Field({ label, hint, className, children }: FieldProps) {
   return (
     <label className={clsx("flex flex-col gap-1.5", className)}>
-      <span className="text-xs font-medium text-slate-600">{label}</span>
+      <span className="text-xs font-semibold text-slate-600 tracking-wide">{label}</span>
       {children}
-      {hint ? <span className="text-xs text-slate-400">{hint}</span> : null}
+      {hint ? <span className="text-xs text-slate-400 leading-relaxed">{hint}</span> : null}
     </label>
   );
 }
@@ -22,7 +22,7 @@ export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
     <input
       {...props}
       className={clsx(
-        "h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10",
+        "h-10 sm:h-11 w-full border border-slate-300 bg-white px-3.5 text-sm text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 hover:border-slate-400",
         props.className
       )}
     />
@@ -36,7 +36,7 @@ export function TextArea(
     <textarea
       {...props}
       className={clsx(
-        "w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10",
+        "w-full border border-slate-300 bg-white px-3.5 py-3 text-sm text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 hover:border-slate-400 resize-none",
         props.className
       )}
     />

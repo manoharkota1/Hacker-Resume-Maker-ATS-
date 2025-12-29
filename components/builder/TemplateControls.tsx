@@ -18,7 +18,7 @@ export function TemplateControls() {
   const setColorTheme = useResumeStore((s) => s.setColorTheme);
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
+    <div className="flex flex-wrap items-center gap-4 border border-slate-200 bg-white p-4">
       <ControlGroup label="Template">
         <SelectButton
           active={template === "modern"}
@@ -136,10 +136,10 @@ function SelectButton({
   return (
     <button
       onClick={onClick}
-      className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+      className={`border px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
         active
           ? "border-slate-900 bg-slate-900 text-white"
-          : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+          : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100 hover:border-slate-300"
       }`}
     >
       {label}

@@ -114,9 +114,9 @@ function validatePassword(password: string): {
   return { valid: true, message: "" };
 }
 
-// Name validation
+// Name validation - allows any characters, just checks length
 function isValidName(name: string): boolean {
-  return name.length >= 2 && name.length <= 100 && /^[a-zA-Z\s'-]+$/.test(name);
+  return name.trim().length >= 2 && name.length <= 100;
 }
 
 // Get rate limit state from localStorage
@@ -449,9 +449,9 @@ export function useAuthState() {
       return false;
     }
 
-    // Validate name
+    // Validate name length only
     if (!isValidName(sanitizedName)) {
-      setError("Please enter a valid name (letters, spaces, hyphens only)");
+      setError("Please enter a valid name (2-100 characters)");
       return false;
     }
 

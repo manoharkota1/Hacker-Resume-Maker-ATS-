@@ -10,21 +10,25 @@ export function ExperienceSection() {
   const removeExperience = useResumeStore((s) => s.removeExperience);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {experience.map((exp) => (
-        <div key={exp.id} className="rounded-lg bg-slate-50 p-3">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-sm font-medium text-slate-800">
+        <div key={exp.id} className="border border-slate-200 bg-slate-50 p-4 transition-all duration-200 hover:bg-slate-100">
+          <div className="mb-4 flex items-center justify-between">
+            <p className="text-sm font-semibold text-slate-800">
               {exp.title || "New Role"}
             </p>
             <button
               onClick={() => removeExperience(exp.id)}
-              className="text-xs text-slate-400 hover:text-red-500"
+              className="p-1.5 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500"
+              title="Remove experience"
             >
-              ✕
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
             </button>
           </div>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Field label="Title">
               <TextInput
                 value={exp.title}
@@ -74,8 +78,8 @@ export function ExperienceSection() {
               />
             </Field>
           </div>
-          <div className="mt-3 space-y-2">
-            <span className="text-xs font-medium text-slate-500">
+          <div className="mt-4 space-y-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Achievements
             </span>
             {exp.bullets.map((bullet, idx) => (
@@ -93,7 +97,7 @@ export function ExperienceSection() {
                 placeholder="Delivered X by doing Y, resulting in Z"
               />
             ))}
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               <button
                 onClick={() =>
                   updateExperience(exp.id, (prev) => ({
@@ -101,9 +105,13 @@ export function ExperienceSection() {
                     bullets: [...prev.bullets, ""],
                   }))
                 }
-                className="text-xs font-medium text-slate-600 hover:text-slate-900"
+                className="flex items-center gap-1 text-xs font-medium text-emerald-600 transition-colors hover:text-emerald-700"
               >
-                + Add bullet
+                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Add bullet
               </button>
               {exp.bullets.length > 1 && (
                 <button
@@ -113,8 +121,11 @@ export function ExperienceSection() {
                       bullets: prev.bullets.slice(0, -1),
                     }))
                   }
-                  className="text-xs text-slate-400 hover:text-red-500"
+                  className="flex items-center gap-1 text-xs text-slate-400 transition-colors hover:text-red-500"
                 >
+                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
                   Remove last
                 </button>
               )}
@@ -124,9 +135,13 @@ export function ExperienceSection() {
       ))}
       <button
         onClick={addExperience}
-        className="w-full rounded-lg bg-slate-100 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-200"
+        className="flex w-full items-center justify-center gap-2 border-2 border-dashed border-slate-300 bg-slate-50 py-3 text-xs font-medium text-slate-500 transition-all duration-200 hover:border-slate-400 hover:bg-slate-100 hover:text-slate-700"
       >
-        + Add experience
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Add experience
       </button>
     </div>
   );

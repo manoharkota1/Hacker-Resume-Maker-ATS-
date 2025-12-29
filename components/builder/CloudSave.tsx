@@ -95,7 +95,7 @@ export function CloudSave() {
 
   if (!isConfigured) {
     return (
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
+      <div className="border border-amber-200 bg-amber-50 p-4">
         <h3 className="mb-2 flex items-center gap-2 text-sm font-semibold text-amber-800">
           <span>☁️</span> Cloud Storage Setup Required
         </h3>
@@ -113,7 +113,7 @@ export function CloudSave() {
           </li>
           <li>Add your project ID to .env.local</li>
         </ol>
-        <div className="mt-3 rounded bg-amber-100 p-2">
+        <div className="mt-3 bg-amber-100 p-2">
           <code className="text-xs text-amber-900">
             NEXT_PUBLIC_APPWRITE_PROJECT_ID=your_project_id
           </code>
@@ -124,20 +124,20 @@ export function CloudSave() {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-slate-200 bg-white p-4">
+      <div className="border border-slate-200 bg-white p-4">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
             <span className="text-lg">☁️</span> Cloud Storage
           </h3>
           {user && (
-            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700">
+            <span className="bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700">
               Connected
             </span>
           )}
         </div>
 
         {/* Current Resume */}
-        <div className="mb-4 rounded-lg bg-slate-50 p-3">
+        <div className="mb-4 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
             <input
               type="text"
@@ -154,7 +154,7 @@ export function CloudSave() {
             <button
               onClick={handleSave}
               disabled={saving || loading}
-              className="flex-1 rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+              className="flex-1 bg-slate-900 px-3 py-2 text-xs font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
             >
               {saving
                 ? "Saving..."
@@ -165,7 +165,7 @@ export function CloudSave() {
             <button
               onClick={handleNewResume}
               disabled={loading}
-              className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-200 disabled:opacity-50"
+              className="bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 transition hover:bg-slate-200 disabled:opacity-50"
             >
               + New
             </button>
@@ -174,7 +174,7 @@ export function CloudSave() {
 
         {/* Error Display */}
         {(error || localError) && (
-          <div className="mb-3 rounded-lg border border-red-200 bg-red-50 p-2">
+          <div className="mb-3 border border-red-200 bg-red-50 p-2">
             <p className="text-xs text-red-700">{error || localError}</p>
           </div>
         )}
@@ -191,7 +191,7 @@ export function CloudSave() {
               <div
                 key={doc.$id}
                 className={clsx(
-                  "flex items-center justify-between rounded-lg border p-2 transition",
+                  "flex items-center justify-between border p-2 transition",
                   activeResumeId === doc.$id
                     ? "border-violet-300 bg-violet-50"
                     : "border-slate-200 hover:bg-slate-50"
@@ -212,7 +212,7 @@ export function CloudSave() {
                 </button>
                 <button
                   onClick={() => doc.$id && handleDelete(doc.$id)}
-                  className="ml-2 rounded p-1 text-slate-400 transition hover:bg-red-100 hover:text-red-600"
+                  className="ml-2 p-1 text-slate-400 transition hover:bg-red-100 hover:text-red-600"
                   title="Delete"
                 >
                   🗑️
@@ -230,7 +230,7 @@ export function CloudSave() {
       {/* Save Dialog */}
       {showSaveDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="w-80 rounded-lg bg-white p-4 shadow-xl">
+          <div className="w-80 bg-white p-4 shadow-xl">
             <h4 className="mb-3 text-sm font-semibold text-slate-900">
               Save Resume
             </h4>
@@ -239,20 +239,20 @@ export function CloudSave() {
               value={resumeTitle}
               onChange={(e) => setResumeTitle(e.target.value)}
               placeholder="Enter resume title..."
-              className="mb-3 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+              className="mb-3 w-full border border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 focus:outline-none"
               autoFocus
             />
             <div className="flex gap-2">
               <button
                 onClick={() => setShowSaveDialog(false)}
-                className="flex-1 rounded-lg bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-200"
+                className="flex-1 bg-slate-100 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-200"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving || !resumeTitle.trim()}
-                className="flex-1 rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+                className="flex-1 bg-slate-900 px-3 py-2 text-xs font-medium text-white hover:bg-slate-800 disabled:opacity-50"
               >
                 {saving ? "Saving..." : "Save"}
               </button>

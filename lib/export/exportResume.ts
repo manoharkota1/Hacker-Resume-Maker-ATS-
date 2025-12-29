@@ -2,11 +2,15 @@
 
 import { Resume } from "@/types/resume";
 
+// A4 dimensions
+const A4_WIDTH_MM = 210;
+const A4_HEIGHT_MM = 297;
+
 export async function exportToPDF(resume: Resume): Promise<void> {
   const html = generateResumeHTML(resume);
 
   // Open a new window with the resume content
-  const printWindow = window.open("", "_blank", "width=800,height=600");
+  const printWindow = window.open("", "_blank", "width=800,height=1000");
   if (!printWindow) {
     alert("Please allow popups to download PDF");
     return;
@@ -48,8 +52,8 @@ function generateResumeHTML(resume: Resume, forWord = false): string {
   const styles = `
     <style>
       @page { 
-        margin: 0.5in; 
-        size: letter; 
+        size: ${A4_WIDTH_MM}mm ${A4_HEIGHT_MM}mm;
+        margin: 20mm;
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { 
@@ -57,45 +61,65 @@ function generateResumeHTML(resume: Resume, forWord = false): string {
         font-size: 11pt; 
         line-height: 1.4;
         color: #1e293b;
-        max-width: 8.5in;
+        width: ${A4_WIDTH_MM}mm;
+        max-width: ${A4_WIDTH_MM}mm;
         margin: 0 auto;
-        padding: ${forWord ? "0.5in" : "0"};
+        padding: ${forWord ? "20mm" : "0"};
+        background: white;
       }
-      h1 { font-size: 24pt; font-weight: 600; margin-bottom: 4px; }
+      h1 { font-size: 22pt; font-weight: 600; margin-bottom: 4px; }
       h2 { 
-        font-size: 12pt; 
+        font-size: 11pt; 
         font-weight: 600; 
         text-transform: uppercase; 
         letter-spacing: 0.5px;
         border-bottom: 1.5px solid #1e293b; 
         padding-bottom: 4px; 
-        margin: 16px 0 10px 0;
+        margin: 14px 0 8px 0;
+        page-break-after: avoid;
       }
-      h3 { font-size: 11pt; font-weight: 600; }
-      .header { text-align: center; margin-bottom: 12px; }
-      .title { font-size: 13pt; color: #475569; margin-bottom: 8px; }
-      .contact { font-size: 10pt; color: #64748b; }
-      .contact span { margin: 0 6px; }
-      .section { margin-bottom: 12px; }
-      .item { margin-bottom: 10px; }
-      .item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
-      .item-title { font-weight: 600; }
-      .item-subtitle { color: #475569; }
-      .item-date { font-size: 10pt; color: #64748b; }
-      ul { margin-left: 18px; margin-top: 4px; }
-      li { margin-bottom: 3px; }
-      .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-      .skill-group { margin-bottom: 4px; }
-      .skill-label { font-weight: 600; font-size: 10pt; }
-      .skill-items { font-size: 10pt; color: #475569; }
-      .summary { margin-bottom: 12px; }
+      h3 { font-size: 10pt; font-weight: 600; }
+      .header { text-align: center; margin-bottom: 10px; }
+      .title { font-size: 12pt; color: #475569; margin-bottom: 6px; }
+      .contact { font-size: 9pt; color: #64748b; }
+      .contact span { margin: 0 4px; }
+      .section { margin-bottom: 10px; page-break-inside: avoid; }
+      .item { margin-bottom: 8px; page-break-inside: avoid; }
+      .item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
+      .item-title { font-weight: 600; font-size: 10pt; }
+      .item-subtitle { color: #475569; font-size: 10pt; }
+      .item-date { font-size: 9pt; color: #64748b; }
+      ul { margin-left: 16px; margin-top: 3px; }
+      li { margin-bottom: 2px; font-size: 10pt; }
+      .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+      .skill-group { margin-bottom: 3px; }
+      .skill-label { font-weight: 600; font-size: 9pt; }
+      .skill-items { font-size: 9pt; color: #475569; }
+      .summary { margin-bottom: 10px; font-size: 10pt; }
+      .page-break { page-break-before: always; }
       @media print {
         @page { 
-          margin: 0.5in;
+          size: A4;
+          margin: 20mm;
         }
-        body { padding: 0; }
+        html, body { 
+          width: ${A4_WIDTH_MM}mm;
+          height: auto;
+        }
+        body { 
+          padding: 0;
+          margin: 0 auto;
+        }
         h2 { page-break-after: avoid; }
+        .section { page-break-inside: avoid; }
         .item { page-break-inside: avoid; }
+      }
+      @media screen {
+        body {
+          padding: 20mm;
+          box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          min-height: ${A4_HEIGHT_MM}mm;
+        }
       }
     </style>
   `;

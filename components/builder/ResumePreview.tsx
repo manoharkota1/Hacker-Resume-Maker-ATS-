@@ -1,10 +1,61 @@
 "use client";
 
-import React, { ReactNode, useMemo } from "react";
+import React, { ReactNode, useMemo, useRef, useEffect, useState, useCallback } from "react";
 import { Resume, SectionOrderItem } from "@/types/resume";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 import { useAuth } from "@/lib/appwrite/auth";
 import clsx from "classnames";
+
+// A4 dimensions at 96 DPI: 794 x 1123 pixels
+// With 20mm margins (~76px), content area is ~642 x 971 pixels
+const A4_WIDTH_PX = 794;
+const A4_HEIGHT_PX = 1123;
+const PAGE_MARGIN_PX = 76; // ~20mm margins
+const CONTENT_HEIGHT_PX = A4_HEIGHT_PX - PAGE_MARGIN_PX * 2; // ~971px usable height
+
+// A4 Page wrapper component
+function A4Page({
+  children,
+  pageNumber,
+  totalPages,
+  showPageNumbers,
+  isLast,
+}: {
+  children: ReactNode;
+  pageNumber: number;
+  totalPages: number;
+  showPageNumbers: boolean;
+  isLast: boolean;
+}) {
+  return (
+    <div
+      className="relative bg-white print:shadow-none print:mb-0"
+      style={{
+        width: `${A4_WIDTH_PX}px`,
+        height: `${A4_HEIGHT_PX}px`,
+        overflow: "hidden",
+        marginBottom: isLast ? "0" : "24px",
+        boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05)",
+        borderRadius: "2px",
+        pageBreakAfter: isLast ? "auto" : "always",
+      }}
+    >
+      {children}
+      {/* Page number indicator - only show if enabled and more than 1 page */}
+      {showPageNumbers && totalPages > 1 && (
+        <div 
+          className="absolute text-xs text-slate-400 print:text-slate-500"
+          style={{
+            bottom: `${PAGE_MARGIN_PX / 2}px`,
+            right: `${PAGE_MARGIN_PX}px`,
+          }}
+        >
+          Page {pageNumber} of {totalPages}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function ResumePreview() {
   const { isAuthenticated, loading: authLoading } = useAuth();
@@ -19,6 +70,10 @@ export function ResumePreview() {
   const headerLayout = useResumeStore((s) => s.headerLayout);
   const showDividers = useResumeStore((s) => s.showDividers);
 
+  const measureRef = useRef<HTMLDivElement>(null);
+  const [pageCount, setPageCount] = useState<number>(1);
+  const [showPageNumbers, setShowPageNumbers] = useState<boolean>(true);
+
   const stylePreset = useMemo(
     () =>
       getStylePreset({
@@ -29,6 +84,55 @@ export function ResumePreview() {
       }),
     [fontFamily, fontSize, lineSpacing, colorTheme]
   );
+
+  // Calculate number of pages needed based on content height
+  const calculatePages = useCallback(() => {
+    if (measureRef.current) {
+      const contentHeight = measureRef.current.scrollHeight;
+      
+      // Only show additional pages if content truly exceeds first page
+      // Use generous buffer to prevent false positives
+      const usableHeight = CONTENT_HEIGHT_PX;
+      const buffer = 20; // pixels tolerance
+      
+      if (contentHeight <= usableHeight + buffer) {
+        setPageCount(1);
+      } else {
+        // Calculate how many pages we actually need
+        const numPages = Math.ceil(contentHeight / usableHeight);
+        setPageCount(numPages);
+      }
+    }
+  }, []);
+
+  // Recalculate pages when content changes
+  useEffect(() => {
+    // Initial calculation
+    calculatePages();
+    
+    // Recalculate after fonts load
+    const timer = setTimeout(calculatePages, 150);
+    
+    // Also recalculate on window resize
+    window.addEventListener("resize", calculatePages);
+    
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("resize", calculatePages);
+    };
+  }, [
+    resume,
+    template,
+    density,
+    fontFamily,
+    fontSize,
+    lineSpacing,
+    colorTheme,
+    sectionOrder,
+    headerLayout,
+    showDividers,
+    calculatePages,
+  ]);
 
   // Render template based on selection
   const templateProps: TemplateProps = {
@@ -43,29 +147,94 @@ export function ResumePreview() {
   const effectiveTemplate =
     !authLoading && !isAuthenticated ? "modern" : template;
 
+  // Render the template content
+  const renderTemplateContent = () => {
+    switch (effectiveTemplate) {
+      case "modern":
+        return <ModernTemplate {...templateProps} />;
+      case "minimal":
+        return <MinimalTemplate {...templateProps} />;
+      case "classic":
+        return <ClassicTemplate {...templateProps} />;
+      case "executive":
+        return <ExecutiveTemplate {...templateProps} />;
+      case "creative":
+        return <CreativeTemplate {...templateProps} />;
+      case "tech":
+        return <TechTemplate {...templateProps} />;
+      default:
+        return <ModernTemplate {...templateProps} />;
+    }
+  };
+
   return (
-    <div className="mx-auto max-w-3xl rounded-lg bg-white p-1 shadow-xl ring-1 ring-black/5">
+    <div className="flex flex-col items-center gap-6 py-4">
+      {/* Hidden measurement container - measures actual content height */}
       <div
-        className="min-h-[11in] rounded-md bg-white"
-        style={{ pageBreakAfter: "auto" }}
+        ref={measureRef}
+        className="absolute opacity-0 pointer-events-none"
+        style={{
+          width: `${A4_WIDTH_PX - PAGE_MARGIN_PX * 2}px`,
+          padding: `${PAGE_MARGIN_PX}px`,
+          visibility: "hidden",
+          position: "absolute",
+          left: "-9999px",
+        }}
+        aria-hidden="true"
       >
-        {effectiveTemplate === "modern" && (
-          <ModernTemplate {...templateProps} />
-        )}
-        {effectiveTemplate === "minimal" && (
-          <MinimalTemplate {...templateProps} />
-        )}
-        {effectiveTemplate === "classic" && (
-          <ClassicTemplate {...templateProps} />
-        )}
-        {effectiveTemplate === "executive" && (
-          <ExecutiveTemplate {...templateProps} />
-        )}
-        {effectiveTemplate === "creative" && (
-          <CreativeTemplate {...templateProps} />
-        )}
-        {effectiveTemplate === "tech" && <TechTemplate {...templateProps} />}
+        {renderTemplateContent()}
       </div>
+
+      {/* Render A4 pages - only render pages that have content */}
+      {Array.from({ length: pageCount }, (_, pageIndex) => (
+        <A4Page
+          key={pageIndex}
+          pageNumber={pageIndex + 1}
+          totalPages={pageCount}
+          showPageNumbers={showPageNumbers}
+          isLast={pageIndex === pageCount - 1}
+        >
+          <div
+            className="a4-content"
+            style={{
+              position: "absolute",
+              top: `-${pageIndex * CONTENT_HEIGHT_PX}px`,
+              left: 0,
+              right: 0,
+              width: "100%",
+              padding: `${PAGE_MARGIN_PX}px`,
+              boxSizing: "border-box",
+            }}
+          >
+            {renderTemplateContent()}
+          </div>
+        </A4Page>
+      ))}
+
+      {/* Page numbers toggle - only show if multiple pages */}
+      {pageCount > 1 && (
+        <div className="flex items-center gap-2 text-sm text-slate-600 no-print">
+          <label htmlFor="showPageNumbers" className="cursor-pointer select-none">
+            Show page numbers
+          </label>
+          <button
+            id="showPageNumbers"
+            onClick={() => setShowPageNumbers(!showPageNumbers)}
+            className={clsx(
+              "relative inline-flex h-5 w-9 items-center rounded-full transition-colors",
+              showPageNumbers ? "bg-emerald-500" : "bg-slate-300"
+            )}
+            aria-pressed={showPageNumbers}
+          >
+            <span
+              className={clsx(
+                "inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform",
+                showPageNumbers ? "translate-x-4" : "translate-x-0.5"
+              )}
+            />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -87,7 +256,6 @@ function ModernTemplate({
   headerLayout,
   showDividers,
 }: TemplateProps) {
-  const pad = density === "compact" ? "p-5" : "p-8";
   const gap = density === "compact" ? "gap-2" : "gap-3";
   const contactLinks = buildContactLinks(resume.personal);
   const isCenter = headerLayout === "center";
@@ -408,7 +576,7 @@ function ModernTemplate({
 
   return (
     <div
-      className={clsx(stylePreset.baseText, pad, "max-w-3xl")}
+      className={clsx(stylePreset.baseText, "w-full")}
       style={{ fontFamily: stylePreset.fontFamily }}
     >
       {/* Personal Info Header - Always First */}
@@ -485,7 +653,6 @@ function MinimalTemplate({
   sectionOrder,
   headerLayout,
 }: Omit<TemplateProps, "showDividers">) {
-  const pad = density === "compact" ? "p-5" : "p-8";
   const contactLinks = buildContactLinks(resume.personal);
   const isCenter = headerLayout === "center";
   const isSplit = headerLayout === "split";
@@ -715,10 +882,9 @@ function MinimalTemplate({
   return (
     <div
       className={clsx(
-        "max-w-3xl space-y-5 border-l-4 bg-white",
+        "w-full space-y-5 border-l-4 bg-white",
         stylePreset.borderLeft,
-        stylePreset.baseText,
-        pad
+        stylePreset.baseText
       )}
       style={{ fontFamily: stylePreset.fontFamily }}
     >
@@ -923,7 +1089,6 @@ function ClassicTemplate({
   headerLayout,
   showDividers,
 }: TemplateProps) {
-  const pad = density === "compact" ? "p-6" : "p-10";
   const contactLinks = buildContactLinks(resume.personal);
   const isCenter = headerLayout === "center";
   const isSplit = headerLayout === "split";
@@ -1020,9 +1185,8 @@ function ClassicTemplate({
   return (
     <div
       className={clsx(
-        "max-w-3xl bg-white font-serif",
-        stylePreset.baseText,
-        pad
+        "w-full bg-white font-serif",
+        stylePreset.baseText
       )}
       style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
     >
@@ -1090,7 +1254,6 @@ function ExecutiveTemplate({
   headerLayout,
   showDividers,
 }: TemplateProps) {
-  const pad = density === "compact" ? "p-6" : "p-10";
   const contactLinks = buildContactLinks(resume.personal);
   const isCenter = headerLayout === "center";
   const isSplit = headerLayout === "split";
@@ -1199,7 +1362,7 @@ function ExecutiveTemplate({
 
   return (
     <div
-      className={clsx("max-w-3xl bg-white", stylePreset.baseText, pad)}
+      className={clsx("w-full bg-white", stylePreset.baseText)}
       style={{ fontFamily: stylePreset.fontFamily }}
     >
       {/* Header with accent bar */}
@@ -1276,7 +1439,6 @@ function CreativeTemplate({
   headerLayout,
   showDividers,
 }: TemplateProps) {
-  const pad = density === "compact" ? "p-5" : "p-8";
   const contactLinks = buildContactLinks(resume.personal);
   const isCenter = headerLayout === "center";
   const isSplit = headerLayout === "split";
@@ -1371,7 +1533,7 @@ function CreativeTemplate({
 
   return (
     <div
-      className={clsx("max-w-3xl bg-white", stylePreset.baseText, pad)}
+      className={clsx("w-full bg-white", stylePreset.baseText)}
       style={{ fontFamily: stylePreset.fontFamily }}
     >
       {/* Header with gradient accent */}
@@ -1435,7 +1597,6 @@ function TechTemplate({
   headerLayout,
   showDividers,
 }: TemplateProps) {
-  const pad = density === "compact" ? "p-5" : "p-8";
   const contactLinks = buildContactLinks(resume.personal);
   const isCenter = headerLayout === "center";
   const isSplit = headerLayout === "split";
@@ -1531,7 +1692,7 @@ function TechTemplate({
 
   return (
     <div
-      className={clsx("max-w-3xl bg-white", stylePreset.baseText, pad)}
+      className={clsx("w-full bg-white", stylePreset.baseText)}
       style={{ fontFamily: "ui-monospace, SFMono-Regular, monospace" }}
     >
       {/* Header */}

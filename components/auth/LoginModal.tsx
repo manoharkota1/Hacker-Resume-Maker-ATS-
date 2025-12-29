@@ -96,13 +96,6 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
         return;
       }
 
-      if (!/^[a-zA-Z\s'-]+$/.test(name)) {
-        setLocalError(
-          "Name can only contain letters, spaces, hyphens, and apostrophes"
-        );
-        return;
-      }
-
       if (password.length < 8) {
         setLocalError("Password must be at least 8 characters");
         return;
@@ -166,9 +159,9 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && handleClose()}
     >
-      <div className="relative w-full max-w-md rounded-2xl bg-white p-8 shadow-2xl mx-4">
+      <div className="relative w-full max-w-md bg-white p-8 shadow-2xl mx-4">
         <div className="mb-6 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-900">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center bg-slate-900">
             <svg
               className="h-7 w-7 text-emerald-400"
               viewBox="0 0 24 24"
@@ -192,7 +185,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
 
         {/* Lockout Warning */}
         {isLocked && (
-          <div className="mb-4 rounded-lg bg-amber-50 border border-amber-200 p-3">
+          <div className="mb-4 bg-amber-50 border border-amber-200 p-3">
             <div className="flex items-center gap-2">
               <svg
                 className="h-5 w-5 text-amber-600"
@@ -225,7 +218,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-black transition placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                className="w-full border border-slate-300 bg-white px-4 py-3 text-sm text-black transition placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
                 placeholder="John Doe"
                 autoComplete="name"
                 maxLength={100}
@@ -242,7 +235,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value.toLowerCase())}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-black transition placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
+              className="w-full border border-slate-300 bg-white px-4 py-3 text-sm text-black transition placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
               placeholder="you@example.com"
               autoComplete="email"
               maxLength={254}
@@ -259,7 +252,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 pr-12 text-sm text-black transition placeholder:text-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200"
+                className="w-full border border-slate-300 bg-white px-4 py-3 pr-12 text-sm text-black transition placeholder:text-slate-400 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-200"
                 placeholder="••••••••"
                 autoComplete={isSignup ? "new-password" : "current-password"}
                 maxLength={128}
@@ -301,7 +294,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
             {isSignup && password.length > 0 && (
               <div className="mt-2">
                 <div className="flex items-center gap-2">
-                  <div className="flex-1 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                  <div className="flex-1 h-1.5 bg-slate-200 overflow-hidden">
                     <div
                       className={`h-full transition-all duration-300 ${passwordStrength.color}`}
                       style={{
@@ -338,10 +331,10 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className={`w-full rounded-lg border bg-white px-4 py-3 text-sm text-black transition placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
+                className={`w-full border bg-white px-4 py-3 text-sm text-black transition placeholder:text-slate-400 focus:outline-none focus:ring-2 ${
                   confirmPassword && password !== confirmPassword
                     ? "border-red-300 focus:border-red-400 focus:ring-red-200"
-                    : "border-slate-300 focus:border-slate-400 focus:ring-slate-200"
+                    : "border-slate-300 focus:border-emerald-500 focus:ring-emerald-200"
                 }`}
                 placeholder="••••••••"
                 autoComplete="new-password"
@@ -387,7 +380,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
           )}
 
           {(localError || error) && (
-            <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-600 flex items-start gap-2">
+            <div className="bg-red-50 border border-red-200 p-3 text-sm text-red-600 flex items-start gap-2">
               <svg
                 className="h-5 w-5 shrink-0"
                 viewBox="0 0 24 24"
@@ -406,7 +399,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
           <button
             type="submit"
             disabled={loading || isLocked}
-            className="w-full rounded-lg bg-slate-900 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-slate-900 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -439,7 +432,7 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
 
         <button
           onClick={handleClose}
-          className="absolute right-4 top-4 rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+          className="absolute right-4 top-4 p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
           aria-label="Close"
         >
           <svg

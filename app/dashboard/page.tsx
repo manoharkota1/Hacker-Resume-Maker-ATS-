@@ -237,66 +237,77 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen min-h-[100dvh] bg-slate-50">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white shadow-sm">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/">
+      <header className="sticky top-0 z-40 bg-white shadow-sm border-b border-slate-200">
+        <div className="mx-auto flex h-16 md:h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="transition-transform hover:scale-[1.02] active:scale-[0.98]">
             <HackoraLogo size="md" />
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Link
               href="/"
-              className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+              className="bg-slate-900 px-4 sm:px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-slate-800 flex items-center gap-2 active:scale-[0.98]"
             >
-              + New Resume
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M12 5v14M5 12h14" /></svg>
+              <span className="hidden sm:inline">New Resume</span>
+              <span className="sm:hidden">New</span>
             </Link>
             <div className="flex items-center gap-3">
-              <div className="hidden sm:block">
-                <p className="text-sm font-medium text-slate-900">
+              <div className="hidden sm:block text-right">
+                <p className="text-sm font-semibold text-slate-900">
                   {user?.name || "User"}
                 </p>
-                <p className="text-xs text-slate-500">{user?.email}</p>
+                <p className="text-xs text-slate-500 truncate max-w-[150px]">{user?.email}</p>
               </div>
               <button
                 onClick={handleLogout}
-                className="rounded-lg bg-slate-100 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-200"
+                className="bg-slate-100 hover:bg-slate-200 px-3 sm:px-4 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-200 border border-slate-200 hover:border-slate-300 flex items-center gap-1.5"
               >
-                Logout
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" /><path d="M16 17l5-5-5-5" /><path d="M21 12H9" /></svg>
+                <span className="hidden sm:inline">Logout</span>
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:py-8 sm:px-6 lg:px-8">
         {/* Welcome + Snack Tabs */}
-        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-3xl font-bold text-slate-900">
-            Welcome back, {user?.name?.split(" ")[0] || "there"}! 👋
-          </h1>
+        <div className="mb-6 sm:mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2">
+              Welcome back{user?.name ? `, ${user.name.split(" ")[0]}` : ""}! 
+              <span className="text-2xl sm:text-3xl">👋</span>
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">Manage your resumes and track your progress</p>
+          </div>
 
-          <div className="inline-flex w-fit rounded-full bg-slate-100 p-1">
+          <div className="inline-flex w-fit bg-slate-100 p-1">
             <button
               onClick={() => setActiveTab("resumes")}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+              className={`px-4 sm:px-5 py-2.5 text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
                 activeTab === "resumes"
                   ? "bg-white text-slate-900 shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              My Resumes
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /></svg>
+              <span className="hidden sm:inline">My Resumes</span>
+              <span className="sm:hidden">Resumes</span>
             </button>
             <button
               onClick={() => setActiveTab("templates")}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+              className={`px-4 sm:px-5 py-2.5 text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
                 activeTab === "templates"
                   ? "bg-white text-slate-900 shadow-sm"
                   : "text-slate-600 hover:text-slate-900"
               }`}
             >
-              MAANG Templates
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" /></svg>
+              <span className="hidden sm:inline">MAANG Templates</span>
+              <span className="sm:hidden">Templates</span>
             </button>
           </div>
         </div>
@@ -310,10 +321,10 @@ export default function DashboardPage() {
                   <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-200 border-t-violet-600" />
                 </div>
               ) : resumes.length === 0 ? (
-                <div className="rounded-xl bg-white p-12 text-center shadow-sm border border-slate-100">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+                <div className="bg-white p-8 sm:p-12 text-center shadow-sm border border-slate-200">
+                  <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center bg-slate-100">
                     <svg
-                      className="h-8 w-8 text-slate-400"
+                      className="h-10 w-10 text-slate-400"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -326,28 +337,29 @@ export default function DashboardPage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-slate-900">
+                  <h3 className="text-xl font-bold text-slate-900">
                     No resumes yet
                   </h3>
-                  <p className="mt-2 text-sm text-slate-500">
-                    Create your first ATS-optimized resume
+                  <p className="mt-2 text-sm text-slate-500 max-w-xs mx-auto">
+                    Create your first ATS-optimized resume and start landing more interviews
                   </p>
                   <Link
                     href="/"
-                    className="mt-6 inline-block rounded-lg bg-slate-900 px-6 py-3 text-sm font-medium text-white transition hover:bg-slate-800"
+                    className="mt-6 inline-flex items-center gap-2 bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-slate-800"
                   >
+                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M12 5v14M5 12h14" /></svg>
                     Create Resume
                   </Link>
                 </div>
               ) : (
-                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                   {resumes.map((resume) => (
                     <div
                       key={resume.$id}
-                      className="group rounded-xl bg-white p-5 shadow-sm border border-slate-100 transition hover:shadow-md hover:border-slate-200"
+                      className="group bg-white p-5 sm:p-6 shadow-sm border border-slate-200 transition-all duration-200 hover:shadow-md hover:border-slate-300"
                     >
                       <div className="mb-4 flex items-start justify-between">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-slate-100">
+                        <div className="flex h-12 w-12 items-center justify-center bg-slate-100">
                           <svg
                             className="h-6 w-6 text-slate-600"
                             fill="none"
@@ -365,7 +377,7 @@ export default function DashboardPage() {
                         {resume.$id && (
                           <button
                             onClick={() => handleDeleteResume(resume.$id!)}
-                            className="rounded-lg p-2 text-slate-400 opacity-0 transition hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
+                            className="p-2.5 text-slate-400 opacity-0 transition-all duration-200 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
                           >
                             <svg
                               className="h-4 w-4"
@@ -383,10 +395,11 @@ export default function DashboardPage() {
                           </button>
                         )}
                       </div>
-                      <h3 className="font-semibold text-slate-900">
+                      <h3 className="font-bold text-slate-900 text-base">
                         {resume.title}
                       </h3>
-                      <p className="mt-1 text-xs text-slate-500">
+                      <p className="mt-1 text-xs text-slate-500 flex items-center gap-1">
+                        <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
                         Updated{" "}
                         {resume.$updatedAt
                           ? new Date(resume.$updatedAt).toLocaleDateString()
@@ -395,20 +408,22 @@ export default function DashboardPage() {
 
                       {resume.$id &&
                       resumeInsightsById[resume.$id]?.suggestions?.length ? (
-                        <div className="mt-3 rounded-lg bg-slate-50 p-3 border border-slate-100">
-                          <p className="text-xs font-semibold text-slate-700">
-                            Suggestions
+                        <div className="mt-4 bg-slate-50 p-3.5 border border-slate-200">
+                          <p className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                            <svg className="h-3.5 w-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+                            Quick Tips
                           </p>
-                          <ul className="mt-2 space-y-1">
+                          <ul className="mt-2.5 space-y-1.5">
                             {resumeInsightsById[resume.$id]!.suggestions.slice(
                               0,
                               3
                             ).map((s, idx) => (
                               <li
                                 key={idx}
-                                className="text-xs text-slate-600 leading-relaxed"
+                                className="text-xs text-slate-600 leading-relaxed flex items-start gap-1.5"
                               >
-                                • {s}
+                                <span className="text-slate-400 mt-0.5">•</span>
+                                {s}
                               </li>
                             ))}
                           </ul>
@@ -416,9 +431,10 @@ export default function DashboardPage() {
                       ) : null}
                       <button
                         onClick={() => handleLoadResume(resume)}
-                        className="mt-4 w-full rounded-lg bg-slate-100 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-200"
+                        className="mt-5 w-full bg-slate-100 hover:bg-slate-200 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-200 flex items-center justify-center gap-2 border border-slate-200 hover:border-slate-300"
                       >
-                        Open
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 3l14 9-14 9V3z" /></svg>
+                        Open Resume
                       </button>
                     </div>
                   ))}
@@ -428,9 +444,9 @@ export default function DashboardPage() {
 
             {/* Resume Tips Sidebar */}
             <aside className="lg:col-span-4 lg:justify-self-end">
-              <div className="rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 p-5 text-white lg:max-w-sm lg:sticky lg:top-24">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20">
+              <div className="bg-emerald-600 p-5 sm:p-6 text-white lg:max-w-sm lg:sticky lg:top-24 shadow-lg">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex h-10 w-10 items-center justify-center bg-white/20">
                     <svg
                       className="h-5 w-5"
                       fill="none"
@@ -445,17 +461,17 @@ export default function DashboardPage() {
                       />
                     </svg>
                   </div>
-                  <h2 className="text-lg font-bold">Resume Guide</h2>
+                  <h2 className="text-xl font-bold">Resume Guide</h2>
                 </div>
-                <p className="text-xs text-white/90 leading-relaxed mb-4">
+                <p className="text-sm text-white/90 leading-relaxed mb-5">
                   Learn what to include, how to structure, and tips to get past
                   ATS systems and impress recruiters.
                 </p>
 
-                <div className="space-y-2.5 mb-4">
-                  <div className="flex items-start gap-2">
+                <div className="space-y-2.5 mb-5">
+                  <div className="flex items-start gap-2.5">
                     <svg
-                      className="h-4 w-4 mt-0.5 shrink-0"
+                      className="h-4 w-4 mt-0.5 shrink-0 text-emerald-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -465,13 +481,13 @@ export default function DashboardPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="text-xs text-white/90">
+                    <span className="text-sm text-white/95">
                       What sections to include
                     </span>
                   </div>
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2.5">
                     <svg
-                      className="h-4 w-4 mt-0.5 shrink-0"
+                      className="h-4 w-4 mt-0.5 shrink-0 text-emerald-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -481,13 +497,13 @@ export default function DashboardPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="text-xs text-white/90">
+                    <span className="text-sm text-white/95">
                       How to write impact bullets
                     </span>
                   </div>
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2.5">
                     <svg
-                      className="h-4 w-4 mt-0.5 shrink-0"
+                      className="h-4 w-4 mt-0.5 shrink-0 text-emerald-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -497,13 +513,13 @@ export default function DashboardPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="text-xs text-white/90">
+                    <span className="text-sm text-white/95">
                       ATS optimization strategies
                     </span>
                   </div>
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2.5">
                     <svg
-                      className="h-4 w-4 mt-0.5 shrink-0"
+                      className="h-4 w-4 mt-0.5 shrink-0 text-emerald-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -513,13 +529,13 @@ export default function DashboardPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="text-xs text-white/90">
+                    <span className="text-sm text-white/95">
                       Formatting best practices
                     </span>
                   </div>
-                  <div className="flex items-start gap-2">
+                  <div className="flex items-start gap-2.5">
                     <svg
-                      className="h-4 w-4 mt-0.5 shrink-0"
+                      className="h-4 w-4 mt-0.5 shrink-0 text-emerald-300"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -529,7 +545,7 @@ export default function DashboardPage() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    <span className="text-xs text-white/90">
+                    <span className="text-sm text-white/95">
                       Keywords recruiters look for
                     </span>
                   </div>
@@ -537,14 +553,15 @@ export default function DashboardPage() {
 
                 <Link
                   href="/guide"
-                  className="block w-full rounded-lg bg-white px-4 py-2.5 text-center text-sm font-semibold text-emerald-600 transition hover:bg-white/90"
+                  className="block w-full bg-white px-4 py-3 text-center text-sm font-bold text-emerald-600 transition-all duration-200 hover:bg-white/90 flex items-center justify-center gap-2"
                 >
                   View Complete Guide
+                  <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M9 5l7 7-7 7" /></svg>
                 </Link>
 
-                <div className="mt-4 rounded-lg bg-white/10 p-3">
-                  <p className="text-xs text-white/80 leading-relaxed">
-                    <strong className="text-white">Pro Tip:</strong> Use action
+                <div className="mt-5 bg-white/15 p-4">
+                  <p className="text-sm text-white/95 leading-relaxed">
+                    <strong className="text-white">💡 Pro Tip:</strong> Use action
                     verbs, quantify achievements, and tailor your resume for
                     each job application.
                   </p>
@@ -556,42 +573,43 @@ export default function DashboardPage() {
 
         {/* MAANG Templates Tab */}
         {activeTab === "templates" && (
-          <div className="grid gap-6 lg:grid-cols-12">
+          <div className="grid gap-5 lg:gap-6 lg:grid-cols-12">
             <div className="lg:col-span-8">
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3">
                 {maangTemplates.map((template) => (
                   <div
                     key={template.id}
-                    className={`group overflow-hidden rounded-lg border-2 bg-white transition hover:border-slate-300 ${template.style}`}
+                    className={`group overflow-hidden border-2 bg-white transition-all duration-200 hover:shadow-md ${template.style}`}
                   >
                     {/* Company Header */}
                     <div
-                      className={`${template.bgColor} ${template.textColor} p-3`}
+                      className={`${template.bgColor} ${template.textColor} p-4`}
                     >
-                      <div className="flex items-center gap-2">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/20">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center bg-white/20">
                           {template.icon}
                         </div>
                         <div>
                           <p
-                            className={`text-xs ${
+                            className={`text-xs font-medium ${
                               template.textColor === "text-white"
-                                ? "text-white/60"
+                                ? "text-white/70"
                                 : "text-slate-500"
                             }`}
                           >
                             {template.company}
                           </p>
-                          <h3 className="text-sm font-bold">{template.name}</h3>
+                          <h3 className="text-base font-bold">{template.name}</h3>
                         </div>
                       </div>
                     </div>
                     {/* Content */}
-                    <div className="p-3">
+                    <div className="p-4">
                       <button
                         onClick={() => handleUseTemplate(template.id)}
-                        className="w-full rounded-lg border border-slate-900 bg-slate-900 py-1.5 text-sm font-medium text-white transition hover:bg-slate-800"
+                        className="w-full bg-slate-900 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-slate-800 flex items-center justify-center gap-2"
                       >
+                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 3l14 9-14 9V3z" /></svg>
                         Use Template
                       </button>
                     </div>
@@ -601,9 +619,9 @@ export default function DashboardPage() {
             </div>
 
             <aside className="lg:col-span-4 lg:justify-self-end">
-              <div className="rounded-xl bg-slate-900 p-5 text-white lg:max-w-sm lg:sticky lg:top-24">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10">
+              <div className="bg-slate-900 p-5 sm:p-6 text-white lg:max-w-sm lg:sticky lg:top-24 shadow-lg">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex h-10 w-10 items-center justify-center bg-white/10">
                     <svg
                       className="h-5 w-5"
                       fill="none"
@@ -618,24 +636,24 @@ export default function DashboardPage() {
                       />
                     </svg>
                   </div>
-                  <h2 className="text-lg font-bold">MAANG Templates</h2>
+                  <h2 className="text-xl font-bold">MAANG Templates</h2>
                 </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
+                <p className="text-sm text-slate-300 leading-relaxed">
                   Authentic design styles inspired by each company&apos;s brand
                   and hiring culture. These templates reflect real recruiter
                   preferences and ATS optimization strategies.
                 </p>
-                <div className="mt-4 space-y-2">
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                <div className="mt-5 space-y-2.5">
+                  <div className="flex items-center gap-2.5 text-sm text-slate-300">
+                    <span className="h-2 w-2 bg-emerald-400"></span>
                     95%+ ATS Parse Rate
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-blue-400"></span>
+                  <div className="flex items-center gap-2.5 text-sm text-slate-300">
+                    <span className="h-2 w-2 bg-blue-400"></span>
                     HR-Verified Formats
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    <span className="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                  <div className="flex items-center gap-2.5 text-sm text-slate-300">
+                    <span className="h-2 w-2 bg-amber-400"></span>
                     Company Culture Aligned
                   </div>
                 </div>

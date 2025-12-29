@@ -775,8 +775,8 @@ export function ATSAnalyzerV2() {
     return (
       <>
         <div className="space-y-4">
-          <div className="rounded-lg border border-slate-200 bg-white p-6 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-emerald-500 to-teal-600">
+          <div className="border border-slate-200 bg-white p-6 text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center bg-emerald-600">
               <svg
                 className="h-8 w-8 text-white"
                 viewBox="0 0 24 24"
@@ -834,7 +834,7 @@ export function ATSAnalyzerV2() {
             </div>
             <button
               onClick={() => setShowLoginModal(true)}
-              className="mt-6 w-full rounded-lg bg-slate-900 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+              className="mt-6 w-full bg-slate-900 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
             >
               Login to Optimize Resume
             </button>
@@ -866,11 +866,11 @@ export function ATSAnalyzerV2() {
         </h3>
 
         {/* Mode Toggle */}
-        <div className="mb-4 flex rounded-lg bg-slate-100 p-1">
+        <div className="mb-4 flex bg-slate-100 p-1">
           <button
             onClick={() => setAnalysisMode("with-jd")}
             className={clsx(
-              "flex-1 flex items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition",
+              "flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition",
               analysisMode === "with-jd"
                 ? "bg-white text-slate-900 shadow-sm"
                 : "text-slate-600 hover:text-slate-900"
@@ -891,7 +891,7 @@ export function ATSAnalyzerV2() {
           <button
             onClick={() => setAnalysisMode("without-jd")}
             className={clsx(
-              "flex-1 flex items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition",
+              "flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition",
               analysisMode === "without-jd"
                 ? "bg-white text-slate-900 shadow-sm"
                 : "text-slate-600 hover:text-slate-900"
@@ -924,13 +924,13 @@ export function ATSAnalyzerV2() {
                 onChange={(e) => setJobDescription(e.target.value)}
                 placeholder="Paste the job description to get personalized optimization suggestions..."
                 rows={4}
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-black placeholder:text-slate-400 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
+                className="w-full border border-slate-200 px-3 py-2 text-sm text-black placeholder:text-slate-400 focus:border-emerald-400 focus:outline-none focus:ring-1 focus:ring-emerald-400"
               />
             </div>
           )}
 
           {analysisMode === "without-jd" && (
-            <div className="rounded-lg bg-slate-50 p-3">
+            <div className="bg-slate-50 p-3">
               <p className="text-xs text-slate-600">
                 <strong>General Mode:</strong> Analyze for common ATS patterns
                 and best practices without a specific job.
@@ -943,7 +943,7 @@ export function ATSAnalyzerV2() {
             disabled={
               loading || (analysisMode === "with-jd" && !jobDescription.trim())
             }
-            className="w-full rounded-lg bg-linear-to-r from-emerald-600 to-teal-600 px-4 py-2.5 text-sm font-medium text-white transition hover:from-emerald-700 hover:to-teal-700 disabled:opacity-50"
+            className="w-full bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:opacity-50"
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
@@ -985,7 +985,7 @@ export function ATSAnalyzerV2() {
 
       {/* Error Display */}
       {error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-3">
+        <div className="border border-red-200 bg-red-50 p-3">
           <p className="text-sm text-red-700">{error}</p>
         </div>
       )}
@@ -994,7 +994,7 @@ export function ATSAnalyzerV2() {
       {result && (
         <div className="space-y-4">
           {/* Score Overview with Potential */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="border border-slate-200 bg-white p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-slate-500 uppercase tracking-wide">
@@ -1100,7 +1100,7 @@ export function ATSAnalyzerV2() {
             <button
               onClick={applyAllImprovements}
               disabled={applying}
-              className="w-full rounded-lg bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-emerald-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50 flex items-center justify-center gap-2"
             >
               {applying ? (
                 <>
@@ -1144,7 +1144,7 @@ export function ATSAnalyzerV2() {
           )}
 
           {/* Improvements List */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="border border-slate-200 bg-white p-4">
             <h4 className="mb-3 flex items-center justify-between text-sm font-semibold text-slate-900">
               <span className="flex items-center gap-2">
                 <svg
@@ -1169,7 +1169,7 @@ export function ATSAnalyzerV2() {
                 <div
                   key={imp.id}
                   className={clsx(
-                    "rounded-lg border p-3 transition",
+                    "border p-3 transition",
                     appliedImprovements.has(imp.id)
                       ? "border-emerald-200 bg-emerald-50 opacity-60"
                       : getPriorityStyles(imp.priority)
@@ -1180,13 +1180,13 @@ export function ATSAnalyzerV2() {
                       <div className="flex items-center gap-2 mb-1">
                         <span
                           className={clsx(
-                            "px-1.5 py-0.5 text-[10px] font-bold uppercase rounded",
+                            "px-1.5 py-0.5 text-[10px] font-bold uppercase",
                             getPriorityBadge(imp.priority)
                           )}
                         >
                           {imp.priority}
                         </span>
-                        <span className="text-[10px] text-slate-500 bg-slate-200 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] text-slate-500 bg-slate-200 px-1.5 py-0.5">
                           +{imp.impact} pts
                         </span>
                         {appliedImprovements.has(imp.id) && (
@@ -1204,7 +1204,7 @@ export function ATSAnalyzerV2() {
 
                       {imp.currentValue && imp.suggestedValue && (
                         <div className="mt-2 space-y-1">
-                          <div className="rounded bg-red-100/50 p-2">
+                          <div className="bg-red-100/50 p-2">
                             <p className="text-[10px] font-medium text-red-700 uppercase">
                               Current
                             </p>
@@ -1212,7 +1212,7 @@ export function ATSAnalyzerV2() {
                               {imp.currentValue}
                             </p>
                           </div>
-                          <div className="rounded bg-emerald-100/50 p-2">
+                          <div className="bg-emerald-100/50 p-2">
                             <p className="text-[10px] font-medium text-emerald-700 uppercase">
                               Suggested
                             </p>
@@ -1224,7 +1224,7 @@ export function ATSAnalyzerV2() {
                       )}
 
                       {!imp.currentValue && imp.suggestedValue && (
-                        <div className="mt-2 rounded bg-emerald-100/50 p-2">
+                        <div className="mt-2 bg-emerald-100/50 p-2">
                           <p className="text-[10px] font-medium text-emerald-700 uppercase">
                             Suggested
                           </p>
@@ -1239,7 +1239,7 @@ export function ATSAnalyzerV2() {
                       <button
                         onClick={() => applyImprovement(imp)}
                         disabled={applying}
-                        className="shrink-0 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
+                        className="shrink-0 bg-slate-900 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-slate-800 disabled:opacity-50"
                       >
                         Apply
                       </button>
@@ -1251,7 +1251,7 @@ export function ATSAnalyzerV2() {
           </div>
 
           {/* Keywords Section */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="border border-slate-200 bg-white p-4">
             <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-900">
               <svg
                 className="h-4 w-4 text-slate-600"
@@ -1285,7 +1285,7 @@ export function ATSAnalyzerV2() {
                   {result.keywords.found.slice(0, 12).map((kw) => (
                     <span
                       key={kw}
-                      className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700"
+                      className="bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700"
                     >
                       {kw}
                     </span>
@@ -1314,7 +1314,7 @@ export function ATSAnalyzerV2() {
                   {result.keywords.missing.slice(0, 10).map((kw) => (
                     <span
                       key={kw}
-                      className="rounded-full bg-red-100 px-2 py-0.5 text-xs text-red-700"
+                      className="bg-red-100 px-2 py-0.5 text-xs text-red-700"
                     >
                       {kw}
                     </span>
@@ -1343,7 +1343,7 @@ export function ATSAnalyzerV2() {
                   {result.keywords.recommended.map((kw) => (
                     <span
                       key={kw}
-                      className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-700"
+                      className="bg-amber-100 px-2 py-0.5 text-xs text-amber-700"
                     >
                       {kw}
                     </span>
@@ -1354,7 +1354,7 @@ export function ATSAnalyzerV2() {
           </div>
 
           {/* Score Breakdown with Tips */}
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <div className="border border-slate-200 bg-white p-4">
             <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold text-slate-900">
               <svg
                 className="h-4 w-4 text-slate-600"
@@ -1381,7 +1381,7 @@ export function ATSAnalyzerV2() {
                 return (
                   <div
                     key={key}
-                    className="rounded-lg border border-slate-100 overflow-hidden"
+                    className="border border-slate-100 overflow-hidden"
                   >
                     <button
                       onClick={() =>
@@ -1415,10 +1415,10 @@ export function ATSAnalyzerV2() {
                           <path d="M19 9l-7 7-7-7" />
                         </svg>
                       </div>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-slate-100">
+                      <div className="h-1.5 overflow-hidden bg-slate-100">
                         <div
                           className={clsx(
-                            "h-full rounded-full transition-all duration-500",
+                            "h-full transition-all duration-500",
                             getScoreBg(value)
                           )}
                           style={{ width: `${value}%` }}
