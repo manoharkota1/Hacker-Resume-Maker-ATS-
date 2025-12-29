@@ -1,0 +1,92 @@
+import { NextRequest, NextResponse } from "next/server";
+import { analyzeResumeLocally, ResumeData } from "@/lib/ats/localAnalyzer";
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { resume, jobDescription, mode } = body;
+
+    if (!resume) {
+      return NextResponse.json(
+        { error: "Resume data is required" },
+        { status: 400 }
+      );
+    }
+
+    // Transform resume data to match ResumeData interface
+    const resumeData: ResumeData = {
+      personal: {
+        name: resume.personal?.name || "",
+        email: resume.personal?.email || "",
+        phone: resume.personal?.phone || "",
+        location: resume.personal?.location || "",
+        linkedin: resume.personal?.linkedin || "",
+        title: resume.personal?.title || "",
+      },
+      summary: resume.summary || "",
+      skills: resume.skills || [],
+      experience: (resume.experience || []).map(
+        (exp: {
+          id: string;
+          title: string;
+          company: string;
+          location?: string;
+          startDate?: string;
+          endDate?: string;
+          bullets: string[];
+        }) => ({
+          id: exp.id,
+          title: exp.title,
+          company: exp.company,
+          location: exp.location,
+          startDate: exp.startDate,
+          endDate: exp.endDate,
+          bullets: exp.bullets || [],
+        })
+      ),
+    };
+
+    // Analyze resume
+    const result = analyzeResumeLocally(
+      resumeData,
+      mode === "with-jd" ? jobDescription || "" : ""
+    );
+
+    // Transform result to match expected API response format
+    const response = {
+      score: result.score,
+      breakdown: {
+        keywordMatch: result.breakdown.keywordMatch,
+        formatting: result.breakdown.formatting,
+        experience: result.breakdown.experience,
+        skills: result.breakdown.skills,
+        education: result.breakdown.education,
+      },
+      keywords: result.keywords,
+      suggestions: result.sectionScores
+        .filter((s) => s.score < 80)
+        .map((s) => ({
+          category: s.section,
+          priority:
+            s.score < 50
+              ? "high"
+              : s.score < 70
+              ? "medium"
+              : ("low" as "high" | "medium" | "low"),
+          suggestion: s.feedback,
+        })),
+      sectionScores: result.sectionScores.map((s) => ({
+        section: s.section,
+        score: s.score,
+        feedback: s.feedback,
+      })),
+    };
+
+    return NextResponse.json(response);
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to analyze resume" },
+      { status: 500 }
+    );
+  }
+}

@@ -13,8 +13,10 @@ import {
 import { Resume } from "@/types/resume";
 import { Models } from "appwrite";
 import { useAuth } from "@/lib/appwrite/auth";
+import { hasRecentlyLoggedOut } from "@/lib/security/sessionManager";
 
-// Anonymous session management
+// Anonymous session management - DISABLED to prevent auto-login after logout
+// Users must explicitly login to use cloud features
 export function useAppwriteAuth() {
   const [user, setUser] = useState<Models.User<Models.Preferences> | null>(
     null
@@ -24,18 +26,20 @@ export function useAppwriteAuth() {
   useEffect(() => {
     const initSession = async () => {
       try {
-        // Check for existing session
+        // Check if user recently logged out - don't auto-login
+        if (hasRecentlyLoggedOut()) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
+        // Check for existing session only - NO anonymous session creation
         const currentUser = await account.get();
         setUser(currentUser);
       } catch {
-        // No session exists, create anonymous session
-        try {
-          await account.createAnonymousSession();
-          const newUser = await account.get();
-          setUser(newUser);
-        } catch (err) {
-          console.error("Failed to create anonymous session:", err);
-        }
+        // No session exists - user needs to login
+        // DO NOT create anonymous session as it causes auto-login after logout
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -73,8 +77,7 @@ export function useResumeStorage() {
       );
 
       setResumes(response.documents as unknown as ResumeDocument[]);
-    } catch (err) {
-      console.error("Failed to fetch resumes:", err);
+    } catch {
       setError("Failed to load resumes");
     } finally {
       setLoading(false);
@@ -129,8 +132,7 @@ export function useResumeStorage() {
 
       await fetchResumes();
       return doc.$id;
-    } catch (err) {
-      console.error("Failed to save resume:", err);
+    } catch {
       setError("Failed to save resume");
       return null;
     }
@@ -165,8 +167,7 @@ export function useResumeStorage() {
 
       await fetchResumes();
       return true;
-    } catch (err) {
-      console.error("Failed to update resume:", err);
+    } catch {
       setError("Failed to update resume");
       return false;
     }
@@ -188,8 +189,7 @@ export function useResumeStorage() {
 
       await fetchResumes();
       return true;
-    } catch (err) {
-      console.error("Failed to delete resume:", err);
+    } catch {
       setError("Failed to delete resume");
       return false;
     }
@@ -205,8 +205,7 @@ export function useResumeStorage() {
       );
 
       return JSON.parse((doc as unknown as ResumeDocument).data);
-    } catch (err) {
-      console.error("Failed to load resume:", err);
+    } catch {
       setError("Failed to load resume");
       return null;
     }

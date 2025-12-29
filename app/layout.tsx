@@ -19,8 +19,10 @@ const spaceGrotesk = Space_Grotesk({
   weight: ["700"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL || "https://hackora.tech";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://hackora.tech"),
+  metadataBase: new URL(siteUrl),
   title: {
     default:
       "Hackora - Smart ATS Resume Builder | Build. Stand Out. Get Hired.",
@@ -56,14 +58,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://hackora.tech",
+    url: siteUrl,
     title: "Hackora - Smart ATS Resume Builder",
     description:
       "Create ATS-optimized resumes that pass applicant tracking systems. Real-time scoring, MAANG templates, and professional formatting.",
     siteName: "Hackora",
     images: [
       {
-        url: "https://hackora.tech/og-image.png",
+        url: `${siteUrl}/og-image.png`,
         width: 1200,
         height: 630,
         alt: "Hackora - Smart ATS Resume Builder",
@@ -75,7 +77,7 @@ export const metadata: Metadata = {
     title: "Hackora - Smart ATS Resume Builder",
     description:
       "Create ATS-optimized resumes that pass applicant tracking systems. Real-time scoring, MAANG templates, and professional formatting.",
-    images: ["https://hackora.tech/og-image.png"],
+    images: [`${siteUrl}/og-image.png`],
     creator: "@hackora",
   },
   robots: {
@@ -96,7 +98,7 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   alternates: {
-    canonical: "https://hackora.tech",
+    canonical: siteUrl,
   },
 };
 

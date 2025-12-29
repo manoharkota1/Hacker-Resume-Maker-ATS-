@@ -8,8 +8,27 @@ import {
   useContext,
   useRef,
 } from "react";
-import { account, ID } from "./config";
+import {
+  account,
+  ID,
+  databases,
+  APPWRITE_DATABASE_ID,
+  COLLECTIONS,
+} from "./config";
 import { Models, AppwriteException } from "appwrite";
+import {
+  clearAllCaches,
+  storeSessionMetadata,
+  validateSessionFingerprint,
+  isSessionExpired,
+  setLogoutFlag,
+  hasRecentlyLoggedOut,
+  clearLogoutFlag,
+} from "@/lib/security/sessionManager";
+import {
+  logSecurityEvent,
+  detectSuspiciousActivity,
+} from "@/lib/security/securityUtils";
 
 // Security constants
 const SESSION_CHECK_INTERVAL = 5 * 60 * 1000; // Check session every 5 minutes
@@ -24,6 +43,14 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   signup: (email: string, password: string, name: string) => Promise<boolean>;
   logout: () => Promise<void>;
+  sendPasswordRecovery: (
+    email: string
+  ) => Promise<{ success: boolean; userId?: string } | null>;
+  resetPassword: (
+    userId: string,
+    secret: string,
+    password: string
+  ) => Promise<boolean>;
   isAuthenticated: boolean;
   isLocked: boolean;
   lockoutRemaining: number;
@@ -186,7 +213,35 @@ export function useAuthState() {
 
   const checkSession = useCallback(async () => {
     try {
+      // Don't auto-login if user recently logged out
+      if (hasRecentlyLoggedOut()) {
+        setUser(null);
+        setLoading(false);
+        return null;
+      }
+
       const currentUser = await account.get();
+
+      // Validate session fingerprint to detect hijacking
+      if (!validateSessionFingerprint(currentUser.$id)) {
+        logSecurityEvent("SUSPICIOUS_ACTIVITY", {
+          userId: currentUser.$id,
+          metadata: { reason: "fingerprint_mismatch" },
+        });
+        // Force logout on fingerprint mismatch
+        await account.deleteSession("current");
+        setUser(null);
+        return null;
+      }
+
+      // Check session expiry
+      if (isSessionExpired(currentUser.$id)) {
+        logSecurityEvent("SESSION_EXPIRED", { userId: currentUser.$id });
+        await account.deleteSession("current");
+        setUser(null);
+        return null;
+      }
+
       setUser(currentUser);
       return currentUser;
     } catch {
@@ -207,9 +262,26 @@ export function useAuthState() {
     sessionCheckRef.current = setInterval(() => {
       // Only check if window is visible and user exists
       if (document.visibilityState === "visible") {
+        // Check logout flag first
+        if (hasRecentlyLoggedOut()) {
+          setUser(null);
+          return;
+        }
+
         account
           .get()
-          .then(setUser)
+          .then((user) => {
+            // Validate fingerprint on periodic check
+            if (
+              !validateSessionFingerprint(user.$id) ||
+              isSessionExpired(user.$id)
+            ) {
+              setUser(null);
+              account.deleteSession("current").catch(() => {});
+            } else {
+              setUser(user);
+            }
+          })
           .catch(() => setUser(null));
       }
     }, SESSION_CHECK_INTERVAL);
@@ -330,11 +402,30 @@ export function useAuthState() {
       setIsLocked(false);
       setLockoutRemaining(0);
 
+      // Store session metadata for security tracking
+      storeSessionMetadata(currentUser.$id);
+
+      // Clear logout flag to allow normal session checks
+      clearLogoutFlag();
+
+      // Log successful login
+      logSecurityEvent("LOGIN_SUCCESS", {
+        userId: currentUser.$id,
+        email: sanitizedEmail,
+      });
+
       return true;
     } catch (err: unknown) {
       recordFailedAttempt(sanitizedEmail);
       const errorMessage = parseAuthError(err);
       setError(errorMessage);
+
+      // Log failed login
+      logSecurityEvent("LOGIN_FAILURE", {
+        email: sanitizedEmail,
+        metadata: { reason: errorMessage },
+      });
+
       return false;
     } finally {
       setLoading(false);
@@ -390,14 +481,54 @@ export function useAuthState() {
       const currentUser = await account.get();
       setUser(currentUser);
 
+      // Create user profile in database (id = auth user id)
+      try {
+        await databases.createDocument(
+          APPWRITE_DATABASE_ID,
+          COLLECTIONS.USERS,
+          currentUser.$id,
+          {
+            email: currentUser.email,
+            name: currentUser.name || sanitizedName,
+            plan: "free",
+          }
+        );
+      } catch (profileErr) {
+        // Ignore conflict if profile already exists
+        if (
+          !(profileErr instanceof AppwriteException && profileErr.code === 409)
+        ) {
+          // Profile creation failed but auth succeeded - non-critical
+        }
+      }
+
       // Clear rate limit on successful signup
       clearRateLimitState(sanitizedEmail);
+
+      // Store session metadata for security tracking
+      storeSessionMetadata(currentUser.$id);
+
+      // Clear logout flag
+      clearLogoutFlag();
+
+      // Log successful signup
+      logSecurityEvent("SIGNUP_SUCCESS", {
+        userId: currentUser.$id,
+        email: sanitizedEmail,
+      });
 
       return true;
     } catch (err: unknown) {
       recordFailedAttempt(sanitizedEmail);
       const errorMessage = parseAuthError(err);
       setError(errorMessage);
+
+      // Log failed signup
+      logSecurityEvent("SIGNUP_FAILURE", {
+        email: sanitizedEmail,
+        metadata: { reason: errorMessage },
+      });
+
       return false;
     } finally {
       setLoading(false);
@@ -405,32 +536,146 @@ export function useAuthState() {
   };
 
   const logout = async () => {
+    const currentUserId = user?.$id;
     setLoading(true);
+
     try {
+      // Set logout flag FIRST to prevent auto-login
+      setLogoutFlag();
+
+      // Clear all application caches
+      clearAllCaches();
+
       // Try to delete all sessions for complete logout
       try {
         await account.deleteSessions();
       } catch {
         // Fallback to current session only
-        await account.deleteSession("current");
+        try {
+          await account.deleteSession("current");
+        } catch {
+          // Session might already be invalid
+        }
       }
 
       setUser(null);
       setError(null);
 
-      // Clear any cached auth data
-      if (typeof window !== "undefined") {
-        // Clear only auth-related storage, not user data
-        Object.keys(localStorage).forEach((key) => {
-          if (key.startsWith("auth_rate_")) {
-            localStorage.removeItem(key);
-          }
-        });
-      }
-    } catch (err) {
-      console.error("Logout failed:", err);
+      // Log security event
+      logSecurityEvent("LOGOUT", { userId: currentUserId });
+    } catch {
       // Force clear user state even if API fails
       setUser(null);
+      clearAllCaches();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Send password recovery using Magic URL token
+  // This sends an email with a clickable link containing userId and secret
+  const sendPasswordRecovery = async (
+    email: string
+  ): Promise<{ success: boolean; userId?: string } | null> => {
+    setError(null);
+
+    const sanitizedEmail = sanitizeInput(email.toLowerCase());
+
+    if (!isValidEmail(sanitizedEmail)) {
+      setError("Please enter a valid email address");
+      return null;
+    }
+
+    setLoading(true);
+    try {
+      // Use createMagicURLToken which sends a link with userId and secret
+      // User can copy the secret from the URL or click the link
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL ||
+        (typeof window !== "undefined"
+          ? window.location.origin
+          : "http://localhost:3000");
+      const recoveryUrl = `${baseUrl}/reset-password`;
+
+      const result = await account.createMagicURLToken(
+        ID.unique(),
+        sanitizedEmail,
+        recoveryUrl,
+        false // phrase = false
+      );
+
+      return { success: true, userId: result.userId };
+    } catch (err: unknown) {
+      const errorMessage = parseAuthError(err);
+      // Don't reveal if email exists or not for security
+      if (
+        errorMessage.includes("not found") ||
+        errorMessage.includes("Invalid") ||
+        errorMessage.includes("already")
+      ) {
+        setError(
+          "If an account exists with this email, a reset link has been sent."
+        );
+        return null;
+      }
+      setError(errorMessage);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Verify secret from Magic URL and reset password
+  const resetPassword = async (
+    userId: string,
+    secret: string,
+    password: string
+  ): Promise<boolean> => {
+    setError(null);
+
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.valid) {
+      setError(passwordValidation.message);
+      return false;
+    }
+
+    // Ensure secret is trimmed and has no spaces
+    const cleanSecret = secret.trim();
+
+    setLoading(true);
+    try {
+      // First, delete any existing sessions to avoid "session is active" error
+      try {
+        await account.deleteSessions();
+      } catch {
+        // Ignore error if no session exists
+      }
+
+      // Use updateMagicURLSession to verify the magic URL token and create session
+      await account.updateMagicURLSession(userId, cleanSecret);
+
+      // Now that user is logged in, update their password
+      await account.updatePassword(password);
+
+      // Get the logged in user
+      const loggedInUser = await account.get();
+      setUser(loggedInUser);
+
+      return true;
+    } catch (err: unknown) {
+      const errorMessage = parseAuthError(err);
+      if (
+        errorMessage.includes("expired") ||
+        errorMessage.includes("Invalid") ||
+        errorMessage.includes("incorrect") ||
+        errorMessage.includes("Param") ||
+        errorMessage.includes("prohibited")
+      ) {
+        setError("Invalid or expired code. Please request a new reset link.");
+      } else {
+        setError(errorMessage);
+      }
+      return false;
     } finally {
       setLoading(false);
     }
@@ -443,6 +688,8 @@ export function useAuthState() {
     login,
     signup,
     logout,
+    sendPasswordRecovery,
+    resetPassword,
     isAuthenticated: !!user,
     isLocked,
     lockoutRemaining,

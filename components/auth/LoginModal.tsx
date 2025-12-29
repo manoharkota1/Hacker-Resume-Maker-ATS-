@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/appwrite/auth";
 
@@ -50,20 +50,6 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
   const [localError, setLocalError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-
-  // Clear form on close
-  useEffect(() => {
-    if (!isOpen) {
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setName("");
-      setLocalError("");
-      setShowPassword(false);
-      setAgreedToTerms(false);
-      clearError();
-    }
-  }, [isOpen, clearError]);
 
   // Format lockout time remaining
   const formatLockoutTime = useCallback((ms: number): string => {
@@ -164,7 +150,13 @@ export function LoginModal({ isOpen, onClose, onSuccess }: LoginModalProps) {
   };
 
   const handleClose = () => {
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setName("");
     setLocalError("");
+    setShowPassword(false);
+    setAgreedToTerms(false);
     clearError();
     onClose();
   };

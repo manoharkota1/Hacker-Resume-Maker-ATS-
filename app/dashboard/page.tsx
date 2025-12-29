@@ -196,8 +196,8 @@ export default function DashboardPage() {
       const data = JSON.parse(resume.data);
       setResume(data);
       router.push("/");
-    } catch (err) {
-      console.error("Failed to load resume:", err);
+    } catch {
+      // Silent fail - resume parsing error
     }
   };
 

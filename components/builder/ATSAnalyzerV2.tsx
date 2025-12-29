@@ -696,8 +696,8 @@ export function ATSAnalyzerV2() {
           improvements: updatedImprovements,
         });
       }
-    } catch (err) {
-      console.error("Failed to apply improvement:", err);
+    } catch {
+      // Silent fail for improvement application
     } finally {
       setApplying(false);
     }
