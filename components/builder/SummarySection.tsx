@@ -1,20 +1,27 @@
 "use client";
 
 import { Field, TextArea } from "./Field";
+import { ClearButton } from "./ClearButton";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 
 export function SummarySection() {
   const summary = useResumeStore((s) => s.resume.summary);
   const updateSummary = useResumeStore((s) => s.updateSummary);
+  const clearSummary = useResumeStore((s) => s.clearSummary);
 
   return (
-    <Field label="Professional summary" hint="2-4 lines; outcome-focused.">
-      <TextArea
-        rows={4}
-        value={summary}
-        placeholder="Full-stack engineer with 5+ years experience building scalable web applications..."
-        onChange={(e) => updateSummary(e.target.value)}
-      />
-    </Field>
+    <div className="space-y-3">
+      <div className="flex justify-end">
+        <ClearButton onClear={clearSummary} sectionName="summary" />
+      </div>
+      <Field label="Professional summary" hint="2-4 lines; outcome-focused.">
+        <TextArea
+          rows={4}
+          value={summary}
+          placeholder="Full-stack engineer with 5+ years experience building scalable web applications..."
+          onChange={(e) => updateSummary(e.target.value)}
+        />
+      </Field>
+    </div>
   );
 }

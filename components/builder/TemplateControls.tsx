@@ -25,11 +25,6 @@ export function TemplateControls() {
           onClick={() => setTemplate("modern")}
           label="Modern"
         />
-        <SelectButton
-          active={template === "minimal"}
-          onClick={() => setTemplate("minimal")}
-          label="Minimal"
-        />
       </ControlGroup>
       <ControlGroup label="Density">
         <SelectButton

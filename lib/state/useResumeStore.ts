@@ -19,7 +19,6 @@ import {
 
 export type TemplateId =
   | "modern"
-  | "minimal"
   | "classic"
   | "executive"
   | "creative"
@@ -101,6 +100,14 @@ type ResumeState = {
     content: string
   ) => void;
   removeCustomSectionItem: (sectionId: string, itemId: string) => void;
+  clearPersonal: () => void;
+  clearSummary: () => void;
+  clearSkills: () => void;
+  clearExperience: () => void;
+  clearInternships: () => void;
+  clearVolunteering: () => void;
+  clearPublications: () => void;
+  clearCustomSection: (sectionId: string) => void;
   setAnalysis: (data: AtsResult | undefined) => void;
   setAnalyzing: (flag: boolean) => void;
   reset: () => void;
@@ -439,6 +446,55 @@ export const useResumeStore = create<ResumeState>()(
               s.id === sectionId
                 ? { ...s, items: s.items.filter((i) => i.id !== itemId) }
                 : s
+            ),
+          },
+        })),
+      clearPersonal: () =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            personal: {
+              name: "",
+              title: "",
+              email: "",
+              phone: "",
+              location: "",
+              linkedin: "",
+              github: "",
+              portfolio: "",
+            },
+          },
+        })),
+      clearSummary: () =>
+        set((state) => ({
+          resume: { ...state.resume, summary: "" },
+        })),
+      clearSkills: () =>
+        set((state) => ({
+          resume: { ...state.resume, skills: [] },
+        })),
+      clearExperience: () =>
+        set((state) => ({
+          resume: { ...state.resume, experience: [] },
+        })),
+      clearInternships: () =>
+        set((state) => ({
+          resume: { ...state.resume, internships: [] },
+        })),
+      clearVolunteering: () =>
+        set((state) => ({
+          resume: { ...state.resume, volunteering: [] },
+        })),
+      clearPublications: () =>
+        set((state) => ({
+          resume: { ...state.resume, publications: [] },
+        })),
+      clearCustomSection: (sectionId: string) =>
+        set((state) => ({
+          resume: {
+            ...state.resume,
+            customSections: state.resume.customSections.map((s) =>
+              s.id === sectionId ? { ...s, items: [] } : s
             ),
           },
         })),

@@ -1,11 +1,13 @@
 "use client";
 
 import { Field, TextInput } from "./Field";
+import { ClearButton } from "./ClearButton";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 
 export function PersonalSection() {
   const personal = useResumeStore((s) => s.resume.personal);
   const update = useResumeStore((s) => s.updatePersonal);
+  const clearPersonal = useResumeStore((s) => s.clearPersonal);
 
   const entries: Array<{
     key: keyof typeof personal;
@@ -34,30 +36,35 @@ export function PersonalSection() {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-3 sm:gap-4">
-      {/* Name and Title - Full Width */}
-      <div className="grid grid-cols-1 gap-3">
-        {entries.slice(0, 2).map((entry) => (
-          <Field key={entry.key} label={entry.label}>
-            <TextInput
-              value={personal[entry.key]}
-              placeholder={entry.placeholder}
-              onChange={(e) => update(entry.key, e.target.value)}
-            />
-          </Field>
-        ))}
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <ClearButton onClear={clearPersonal} sectionName="personal info" />
       </div>
-      {/* Contact Info - 2 Columns on Larger Screens */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {entries.slice(2).map((entry) => (
-          <Field key={entry.key} label={entry.label}>
-            <TextInput
-              value={personal[entry.key]}
-              placeholder={entry.placeholder}
-              onChange={(e) => update(entry.key, e.target.value)}
-            />
-          </Field>
-        ))}
+      <div className="grid grid-cols-1 gap-3 sm:gap-4">
+        {/* Name and Title - Full Width */}
+        <div className="grid grid-cols-1 gap-3">
+          {entries.slice(0, 2).map((entry) => (
+            <Field key={entry.key} label={entry.label}>
+              <TextInput
+                value={personal[entry.key]}
+                placeholder={entry.placeholder}
+                onChange={(e) => update(entry.key, e.target.value)}
+              />
+            </Field>
+          ))}
+        </div>
+        {/* Contact Info - 2 Columns on Larger Screens */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {entries.slice(2).map((entry) => (
+            <Field key={entry.key} label={entry.label}>
+              <TextInput
+                value={personal[entry.key]}
+                placeholder={entry.placeholder}
+                onChange={(e) => update(entry.key, e.target.value)}
+              />
+            </Field>
+          ))}
+        </div>
       </div>
     </div>
   );

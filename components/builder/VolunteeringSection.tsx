@@ -1,6 +1,7 @@
 "use client";
 
 import { Field, TextInput, TextArea } from "./Field";
+import { ClearButton } from "./ClearButton";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 
 export function VolunteeringSection() {
@@ -8,9 +9,13 @@ export function VolunteeringSection() {
   const add = useResumeStore((s) => s.addVolunteer);
   const update = useResumeStore((s) => s.updateVolunteer);
   const remove = useResumeStore((s) => s.removeVolunteer);
+  const clearVolunteering = useResumeStore((s) => s.clearVolunteering);
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <ClearButton onClear={clearVolunteering} sectionName="volunteering" />
+      </div>
       {volunteering.map((item) => (
         <div key={item.id} className="border border-slate-200 bg-slate-50 p-4 transition-all duration-200 hover:bg-slate-100">
           <div className="mb-4 flex items-center justify-between">

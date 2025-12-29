@@ -13,6 +13,7 @@ import { useResumeStore } from "@/lib/state/useResumeStore";
 import type { TemplateId } from "@/lib/state/useResumeStore";
 import { analyzeResumeBasics } from "@/lib/resume/analyzeResume";
 import type { Resume } from "@/types/resume";
+import { MiniResumePreview } from "@/components/builder/MiniResumePreview";
 
 // MAANG Templates - Authentic company design styles
 const maangTemplates = [
@@ -172,12 +173,12 @@ export default function DashboardPage() {
   const setTemplate = useResumeStore((s) => s.setTemplate);
 
   const resumeInsightsById = useMemo(() => {
-    const out: Record<string, { suggestions: string[] } | undefined> = {};
+    const out: Record<string, { suggestions: string[]; parsed?: Resume } | undefined> = {};
     for (const doc of resumes) {
       if (!doc.$id) continue;
       try {
         const parsed = JSON.parse(doc.data) as Resume;
-        out[doc.$id] = analyzeResumeBasics(parsed);
+        out[doc.$id] = { ...analyzeResumeBasics(parsed), parsed };
       } catch {
         out[doc.$id] = undefined;
       }
@@ -210,9 +211,9 @@ export default function DashboardPage() {
   const handleUseTemplate = (templateId: string) => {
     // Map MAANG templates to existing template types
     const templateMap: Record<string, TemplateId> = {
-      google: "minimal",
+      google: "modern",
       amazon: "executive",
-      apple: "modern",
+      apple: "classic",
       meta: "creative",
       netflix: "tech",
     };
@@ -356,28 +357,13 @@ export default function DashboardPage() {
                   {resumes.map((resume) => (
                     <div
                       key={resume.$id}
-                      className="group bg-white p-5 sm:p-6 shadow-sm border border-slate-200 transition-all duration-200 hover:shadow-md hover:border-slate-300"
+                      className="group bg-white p-4 shadow-sm border border-slate-200 transition-all duration-200 hover:shadow-md hover:border-slate-300"
                     >
-                      <div className="mb-4 flex items-start justify-between">
-                        <div className="flex h-12 w-12 items-center justify-center bg-slate-100">
-                          <svg
-                            className="h-6 w-6 text-slate-600"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            strokeWidth={1.5}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                          </svg>
-                        </div>
-                        {resume.$id && (
+                      {resume.$id && (
+                        <div className="flex justify-end mb-1">
                           <button
                             onClick={() => handleDeleteResume(resume.$id!)}
-                            className="p-2.5 text-slate-400 opacity-0 transition-all duration-200 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
+                            className="p-1.5 text-slate-400 opacity-0 transition-all duration-200 hover:bg-red-50 hover:text-red-500 group-hover:opacity-100"
                           >
                             <svg
                               className="h-4 w-4"
@@ -393,6 +379,31 @@ export default function DashboardPage() {
                               />
                             </svg>
                           </button>
+                        </div>
+                      )}
+                      <div className="mb-3 flex justify-center">
+                        {/* Mini Preview */}
+                        {resume.$id && resumeInsightsById[resume.$id]?.parsed ? (
+                          <MiniResumePreview 
+                            resume={resumeInsightsById[resume.$id]!.parsed!} 
+                            scale={0.12}
+                          />
+                        ) : (
+                          <div className="flex h-[135px] w-[95px] items-center justify-center bg-slate-100 border border-slate-200">
+                            <svg
+                              className="h-6 w-6 text-slate-400"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              strokeWidth={1.5}
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              />
+                            </svg>
+                          </div>
                         )}
                       </div>
                       <h3 className="font-bold text-slate-900 text-base">
@@ -405,33 +416,9 @@ export default function DashboardPage() {
                           ? new Date(resume.$updatedAt).toLocaleDateString()
                           : "Recently"}
                       </p>
-
-                      {resume.$id &&
-                      resumeInsightsById[resume.$id]?.suggestions?.length ? (
-                        <div className="mt-4 bg-slate-50 p-3.5 border border-slate-200">
-                          <p className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                            <svg className="h-3.5 w-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
-                            Quick Tips
-                          </p>
-                          <ul className="mt-2.5 space-y-1.5">
-                            {resumeInsightsById[resume.$id]!.suggestions.slice(
-                              0,
-                              3
-                            ).map((s, idx) => (
-                              <li
-                                key={idx}
-                                className="text-xs text-slate-600 leading-relaxed flex items-start gap-1.5"
-                              >
-                                <span className="text-slate-400 mt-0.5">•</span>
-                                {s}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : null}
                       <button
                         onClick={() => handleLoadResume(resume)}
-                        className="mt-5 w-full bg-slate-100 hover:bg-slate-200 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-200 flex items-center justify-center gap-2 border border-slate-200 hover:border-slate-300"
+                        className="mt-3 w-full bg-slate-100 hover:bg-slate-200 py-2.5 text-sm font-semibold text-slate-700 transition-all duration-200 flex items-center justify-center gap-2 border border-slate-200 hover:border-slate-300"
                       >
                         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 3l14 9-14 9V3z" /></svg>
                         Open Resume

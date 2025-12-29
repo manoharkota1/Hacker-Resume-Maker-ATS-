@@ -1,6 +1,7 @@
 "use client";
 
 import { Field, TextInput } from "./Field";
+import { ClearButton } from "./ClearButton";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 import { useState, useEffect } from "react";
 
@@ -9,9 +10,13 @@ export function SkillsSection() {
   const updateGroup = useResumeStore((s) => s.updateSkillGroup);
   const addGroup = useResumeStore((s) => s.addSkillGroup);
   const removeGroup = useResumeStore((s) => s.removeSkillGroup);
+  const clearSkills = useResumeStore((s) => s.clearSkills);
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <ClearButton onClear={clearSkills} sectionName="skills" />
+      </div>
       {skills.map((group, idx) => (
         <SkillGroupInput
           key={idx}

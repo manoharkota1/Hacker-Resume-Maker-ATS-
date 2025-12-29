@@ -1,6 +1,7 @@
 "use client";
 
 import { Field, TextInput } from "./Field";
+import { ClearButton } from "./ClearButton";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 
 export function PublicationsSection() {
@@ -8,9 +9,13 @@ export function PublicationsSection() {
   const add = useResumeStore((s) => s.addPublication);
   const update = useResumeStore((s) => s.updatePublication);
   const remove = useResumeStore((s) => s.removePublication);
+  const clearPublications = useResumeStore((s) => s.clearPublications);
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <ClearButton onClear={clearPublications} sectionName="publications" />
+      </div>
       {publications.map((item) => (
         <div key={item.id} className="border border-slate-200 bg-slate-50 p-4 transition-all duration-200 hover:bg-slate-100">
           <div className="mb-4 flex items-center justify-between">

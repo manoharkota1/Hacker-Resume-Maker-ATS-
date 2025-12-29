@@ -1,6 +1,7 @@
 "use client";
 
 import { Field, TextInput, TextArea } from "./Field";
+import { ClearButton } from "./ClearButton";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 
 export function ExperienceSection() {
@@ -8,9 +9,13 @@ export function ExperienceSection() {
   const addExperience = useResumeStore((s) => s.addExperience);
   const updateExperience = useResumeStore((s) => s.updateExperience);
   const removeExperience = useResumeStore((s) => s.removeExperience);
+  const clearExperience = useResumeStore((s) => s.clearExperience);
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-end">
+        <ClearButton onClear={clearExperience} sectionName="experience" />
+      </div>
       {experience.map((exp) => (
         <div key={exp.id} className="border border-slate-200 bg-slate-50 p-4 transition-all duration-200 hover:bg-slate-100">
           <div className="mb-4 flex items-center justify-between">

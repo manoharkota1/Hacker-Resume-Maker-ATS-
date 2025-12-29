@@ -46,6 +46,7 @@ export default function Home() {
   const density = useResumeStore((s) => s.density);
   const headerLayout = useResumeStore((s) => s.headerLayout);
   const showDividers = useResumeStore((s) => s.showDividers);
+  const colorTheme = useResumeStore((s) => s.colorTheme);
   const sectionOrder = useResumeStore((s) => s.sectionOrder);
   const sidebarWidth = useResumeStore((s) => s.sidebarWidth);
   const setTemplate = useResumeStore((s) => s.setTemplate);
@@ -53,6 +54,7 @@ export default function Home() {
   const setDensity = useResumeStore((s) => s.setDensity);
   const setHeaderLayout = useResumeStore((s) => s.setHeaderLayout);
   const setShowDividers = useResumeStore((s) => s.setShowDividers);
+  const setColorTheme = useResumeStore((s) => s.setColorTheme);
   const reorderSections = useResumeStore((s) => s.reorderSections);
   const setSidebarWidth = useResumeStore((s) => s.setSidebarWidth);
   const addCustomSection = useResumeStore((s) => s.addCustomSection);
@@ -66,7 +68,6 @@ export default function Home() {
 
   const allTemplateOptions = [
     { value: "modern", label: "Modern", locked: false },
-    { value: "minimal", label: "Minimal", locked: !isAuthenticated },
     { value: "classic", label: "Classic", locked: !isAuthenticated },
     { value: "executive", label: "Executive", locked: !isAuthenticated },
     { value: "creative", label: "Creative", locked: !isAuthenticated },
@@ -210,8 +211,6 @@ export default function Home() {
             value={
               template === "modern"
                 ? "Modern"
-                : template === "minimal"
-                ? "Minimal"
                 : template === "classic"
                 ? "Classic"
                 : template === "executive"
@@ -224,7 +223,6 @@ export default function Home() {
             onChange={(v) => {
               const next = v as
                 | "modern"
-                | "minimal"
                 | "classic"
                 | "executive"
                 | "creative"
@@ -238,34 +236,8 @@ export default function Home() {
             }}
             showLocks={true}
           />
-          <NavDropdown
-            label="Lines"
-            value={showDividers ? "Yes" : "No"}
-            options={[
-              { value: "yes", label: "Yes" },
-              { value: "no", label: "No" },
-            ]}
-            onChange={(v) => setShowDividers(v === "yes")}
-          />
-          <NavDropdown
-            label="Font"
-            value={fontFamily.charAt(0).toUpperCase() + fontFamily.slice(1)}
-            options={[
-              { value: "geist", label: "Geist" },
-              { value: "inter", label: "Inter" },
-              { value: "serif", label: "Serif" },
-            ]}
-            onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
-          />
-          <NavDropdown
-            label="Density"
-            value={density === "cozy" ? "Cozy" : "Compact"}
-            options={[
-              { value: "cozy", label: "Cozy" },
-              { value: "compact", label: "Compact" },
-            ]}
-            onChange={(v) => setDensity(v as "cozy" | "compact")}
-          />
+          
+          {/* Common: Header Layout */}
           <NavDropdown
             label="Header"
             value={
@@ -282,6 +254,116 @@ export default function Home() {
             ]}
             onChange={(v) => setHeaderLayout(v as "left" | "center" | "split")}
           />
+
+          {/* Modern: Lines, Font, Density */}
+          {template === "modern" && (
+            <>
+              <NavDropdown
+                label="Lines"
+                value={showDividers ? "Yes" : "No"}
+                options={[
+                  { value: "yes", label: "Yes" },
+                  { value: "no", label: "No" },
+                ]}
+                onChange={(v) => setShowDividers(v === "yes")}
+              />
+              <NavDropdown
+                label="Font"
+                value={fontFamily.charAt(0).toUpperCase() + fontFamily.slice(1)}
+                options={[
+                  { value: "geist", label: "Geist" },
+                  { value: "inter", label: "Inter" },
+                  { value: "serif", label: "Serif" },
+                ]}
+                onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
+              />
+              <NavDropdown
+                label="Density"
+                value={density === "cozy" ? "Cozy" : "Compact"}
+                options={[
+                  { value: "cozy", label: "Cozy" },
+                  { value: "compact", label: "Compact" },
+                ]}
+                onChange={(v) => setDensity(v as "cozy" | "compact")}
+              />
+            </>
+          )}
+
+          {/* Classic: Lines, Font */}
+          {template === "classic" && (
+            <>
+              <NavDropdown
+                label="Lines"
+                value={showDividers ? "Yes" : "No"}
+                options={[
+                  { value: "yes", label: "Yes" },
+                  { value: "no", label: "No" },
+                ]}
+                onChange={(v) => setShowDividers(v === "yes")}
+              />
+              <NavDropdown
+                label="Font"
+                value={fontFamily.charAt(0).toUpperCase() + fontFamily.slice(1)}
+                options={[
+                  { value: "geist", label: "Geist" },
+                  { value: "inter", label: "Inter" },
+                  { value: "serif", label: "Serif" },
+                ]}
+                onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
+              />
+            </>
+          )}
+
+          {/* Executive (Amazon): Lines, Density */}
+          {template === "executive" && (
+            <>
+              <NavDropdown
+                label="Lines"
+                value={showDividers ? "Yes" : "No"}
+                options={[
+                  { value: "yes", label: "Yes" },
+                  { value: "no", label: "No" },
+                ]}
+                onChange={(v) => setShowDividers(v === "yes")}
+              />
+              <NavDropdown
+                label="Density"
+                value={density === "cozy" ? "Cozy" : "Compact"}
+                options={[
+                  { value: "cozy", label: "Cozy" },
+                  { value: "compact", label: "Compact" },
+                ]}
+                onChange={(v) => setDensity(v as "cozy" | "compact")}
+              />
+            </>
+          )}
+
+          {/* Creative (Meta): Theme/Color */}
+          {template === "creative" && (
+            <NavDropdown
+              label="Theme"
+              value={colorTheme.charAt(0).toUpperCase() + colorTheme.slice(1)}
+              options={[
+                { value: "slate", label: "Slate" },
+                { value: "indigo", label: "Indigo" },
+                { value: "emerald", label: "Emerald" },
+              ]}
+              onChange={(v) => setColorTheme(v as "slate" | "indigo" | "emerald")}
+            />
+          )}
+
+          {/* Tech: Lines */}
+          {template === "tech" && (
+            <NavDropdown
+              label="Lines"
+              value={showDividers ? "Yes" : "No"}
+              options={[
+                { value: "yes", label: "Yes" },
+                { value: "no", label: "No" },
+              ]}
+              onChange={(v) => setShowDividers(v === "yes")}
+            />
+          )}
         </div>
 
         {/* Export & Mobile Toggle */}
@@ -372,7 +454,6 @@ export default function Home() {
             onChange={(v) => {
               const next = v as
                 | "modern"
-                | "minimal"
                 | "classic"
                 | "executive"
                 | "creative"
@@ -387,23 +468,8 @@ export default function Home() {
             options={allTemplateOptions}
             showLocks={true}
           />
-          <MobileSelect
-            value={showDividers ? "yes" : "no"}
-            onChange={(v) => setShowDividers(v === "yes")}
-            options={[
-              { value: "yes", label: "Lines" },
-              { value: "no", label: "No Lines" },
-            ]}
-          />
-          <MobileSelect
-            value={fontFamily}
-            onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
-            options={[
-              { value: "geist", label: "Geist" },
-              { value: "inter", label: "Inter" },
-              { value: "serif", label: "Serif" },
-            ]}
-          />
+          
+          {/* Common: Header Layout */}
           <MobileSelect
             value={headerLayout}
             onChange={(v) => setHeaderLayout(v as "left" | "center" | "split")}
@@ -413,6 +479,107 @@ export default function Home() {
               { value: "split", label: "Split" },
             ]}
           />
+
+          {/* Modern: Lines, Font, Density */}
+          {template === "modern" && (
+            <>
+              <MobileSelect
+                value={showDividers ? "yes" : "no"}
+                onChange={(v) => setShowDividers(v === "yes")}
+                options={[
+                  { value: "yes", label: "Lines" },
+                  { value: "no", label: "No Lines" },
+                ]}
+              />
+              <MobileSelect
+                value={fontFamily}
+                onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
+                options={[
+                  { value: "geist", label: "Geist" },
+                  { value: "inter", label: "Inter" },
+                  { value: "serif", label: "Serif" },
+                ]}
+              />
+              <MobileSelect
+                value={density}
+                onChange={(v) => setDensity(v as "cozy" | "compact")}
+                options={[
+                  { value: "cozy", label: "Cozy" },
+                  { value: "compact", label: "Compact" },
+                ]}
+              />
+            </>
+          )}
+
+          {/* Classic: Lines, Font */}
+          {template === "classic" && (
+            <>
+              <MobileSelect
+                value={showDividers ? "yes" : "no"}
+                onChange={(v) => setShowDividers(v === "yes")}
+                options={[
+                  { value: "yes", label: "Lines" },
+                  { value: "no", label: "No Lines" },
+                ]}
+              />
+              <MobileSelect
+                value={fontFamily}
+                onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
+                options={[
+                  { value: "geist", label: "Geist" },
+                  { value: "inter", label: "Inter" },
+                  { value: "serif", label: "Serif" },
+                ]}
+              />
+            </>
+          )}
+
+          {/* Executive: Lines, Density */}
+          {template === "executive" && (
+            <>
+              <MobileSelect
+                value={showDividers ? "yes" : "no"}
+                onChange={(v) => setShowDividers(v === "yes")}
+                options={[
+                  { value: "yes", label: "Lines" },
+                  { value: "no", label: "No Lines" },
+                ]}
+              />
+              <MobileSelect
+                value={density}
+                onChange={(v) => setDensity(v as "cozy" | "compact")}
+                options={[
+                  { value: "cozy", label: "Cozy" },
+                  { value: "compact", label: "Compact" },
+                ]}
+              />
+            </>
+          )}
+
+          {/* Creative: Theme */}
+          {template === "creative" && (
+            <MobileSelect
+              value={colorTheme}
+              onChange={(v) => setColorTheme(v as "slate" | "indigo" | "emerald")}
+              options={[
+                { value: "slate", label: "Slate" },
+                { value: "indigo", label: "Indigo" },
+                { value: "emerald", label: "Emerald" },
+              ]}
+            />
+          )}
+
+          {/* Tech: Lines */}
+          {template === "tech" && (
+            <MobileSelect
+              value={showDividers ? "yes" : "no"}
+              onChange={(v) => setShowDividers(v === "yes")}
+              options={[
+                { value: "yes", label: "Lines" },
+                { value: "no", label: "No Lines" },
+              ]}
+            />
+          )}
         </div>
         <div className="flex items-center gap-1.5 flex-shrink-0 pl-1.5 border-l border-slate-200">
           {isAuthenticated && (
