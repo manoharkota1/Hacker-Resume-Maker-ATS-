@@ -93,10 +93,31 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#0F2A44" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F2A44" },
+  ],
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+  },
   icons: {
-    icon: "/icon.svg",
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" },
+    ],
     shortcut: "/icon.svg",
-    apple: "/icon.svg",
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    other: [
+      {
+        rel: "mask-icon",
+        url: "/icon.svg",
+      },
+    ],
   },
   manifest: "/site.webmanifest",
   alternates: {

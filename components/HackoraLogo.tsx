@@ -12,86 +12,66 @@ export function HackoraLogo({
   className = "",
 }: HackoraLogoProps) {
   const sizeMap = {
-    sm: { icon: 32, text: "text-sm" },
-    md: { icon: 40, text: "text-lg" },
-    lg: { icon: 56, text: "text-2xl" },
+    sm: { 
+      icon: 28, 
+      text: "text-base font-semibold",
+      gap: "gap-2",
+      tagline: false
+    },
+    md: { 
+      icon: 36, 
+      text: "text-lg font-bold",
+      gap: "gap-2.5",
+      tagline: true
+    },
+    lg: { 
+      icon: 48, 
+      text: "text-2xl font-bold",
+      gap: "gap-3",
+      tagline: true
+    },
   };
 
-  const { icon: iconSize, text: textSize } = sizeMap[size];
+  const config = sizeMap[size];
 
-  // Professional logo: Monogram "H" with resume bar + checkmark badge
+  // Shield with resume and checkmark logo
   const logoSvg = (
     <svg
-      width={iconSize}
-      height={iconSize}
-      viewBox="0 0 64 64"
+      width={config.icon}
+      height={config.icon}
+      viewBox="0 0 512 512"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="shrink-0"
+      className="shrink-0 drop-shadow-sm"
     >
-      <defs>
-        <linearGradient
-          id="hackora-grad"
-          x1="12"
-          y1="12"
-          x2="52"
-          y2="52"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#10b981" />
-          <stop offset="1" stopColor="#34d399" />
-        </linearGradient>
-      </defs>
-
-      {/* Outer shell */}
-      <rect x="4" y="4" width="56" height="56" rx="16" fill="#0f172a" />
-
-      {/* Monogram H - left and right pillars */}
-      <rect
-        x="16"
-        y="14"
-        width="10"
-        height="36"
-        rx="5"
-        fill="url(#hackora-grad)"
-      />
-      <rect
-        x="38"
-        y="14"
-        width="10"
-        height="36"
-        rx="5"
-        fill="url(#hackora-grad)"
+      {/* Shield */}
+      <path
+        d="M256 40L416 104V256C416 344 336 416 256 456C176 416 96 344 96 256V104L256 40Z"
+        fill="#0F2A44"
       />
 
-      {/* Center bar (resume line) */}
-      <rect
-        x="22"
-        y="28"
-        width="20"
-        height="8"
-        rx="4"
-        fill="#e5f7ef"
-        opacity="0.9"
+      {/* Inner Shield */}
+      <path
+        d="M256 72L384 124V252C384 320 320 380 256 412C192 380 128 320 128 252V124L256 72Z"
+        fill="#0B0F14"
       />
 
-      {/* Accent spark */}
-      <circle cx="24" cy="18" r="2" fill="#34d399" opacity="0.8" />
-      <circle cx="40" cy="18" r="2" fill="#34d399" opacity="0.8" />
+      {/* Resume Paper */}
+      <rect x="186" y="156" width="140" height="180" rx="10" fill="#F9FAFB" />
 
-      {/* Accent dot for balance */}
-      <circle cx="46" cy="42" r="4" fill="#34d399" opacity="0.85" />
+      {/* Resume Lines */}
+      <rect x="206" y="182" width="100" height="10" rx="5" fill="#4B5563" />
+      <rect x="206" y="206" width="80" height="10" rx="5" fill="#4B5563" />
+      <rect x="206" y="230" width="90" height="10" rx="5" fill="#4B5563" />
+      <rect x="206" y="254" width="70" height="10" rx="5" fill="#4B5563" />
 
-      {/* Soft inner glow */}
-      <rect
-        x="8"
-        y="8"
-        width="48"
-        height="48"
-        rx="12"
-        stroke="#34d399"
-        strokeWidth="1"
-        opacity="0.2"
+      {/* Check Mark */}
+      <path
+        d="M220 298L244 322L292 272"
+        stroke="#22C55E"
+        strokeWidth="14"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -101,21 +81,8 @@ export function HackoraLogo({
   }
 
   return (
-    <div className={`flex items-center gap-2.5 ${className}`}>
+    <div className={className}>
       {logoSvg}
-      <div className="flex flex-col">
-        <span
-          className={`font-bold text-slate-900 leading-tight tracking-tight ${textSize}`}
-          style={{ fontFamily: "var(--font-space-grotesk)" }}
-        >
-          Hackora
-        </span>
-        {size !== "sm" && (
-          <span className="text-xs text-slate-500 leading-tight">
-            Build. Stand Out. Get Hired.
-          </span>
-        )}
-      </div>
     </div>
   );
 }
@@ -126,50 +93,39 @@ export function HackoraFavicon() {
     <svg
       width="32"
       height="32"
-      viewBox="0 0 64 64"
+      viewBox="0 0 512 512"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <defs>
-        <linearGradient
-          id="hackora-grad-fav"
-          x1="12"
-          y1="12"
-          x2="52"
-          y2="52"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#10b981" />
-          <stop offset="1" stopColor="#34d399" />
-        </linearGradient>
-      </defs>
-      <rect x="4" y="4" width="56" height="56" rx="16" fill="#0f172a" />
-      <rect
-        x="16"
-        y="14"
-        width="10"
-        height="36"
-        rx="5"
-        fill="url(#hackora-grad-fav)"
+      {/* Shield */}
+      <path
+        d="M256 40L416 104V256C416 344 336 416 256 456C176 416 96 344 96 256V104L256 40Z"
+        fill="#0F2A44"
       />
-      <rect
-        x="38"
-        y="14"
-        width="10"
-        height="36"
-        rx="5"
-        fill="url(#hackora-grad-fav)"
+
+      {/* Inner Shield */}
+      <path
+        d="M256 72L384 124V252C384 320 320 380 256 412C192 380 128 320 128 252V124L256 72Z"
+        fill="#0B0F14"
       />
-      <rect
-        x="22"
-        y="28"
-        width="20"
-        height="8"
-        rx="4"
-        fill="#e5f7ef"
-        opacity="0.9"
+
+      {/* Resume Paper */}
+      <rect x="186" y="156" width="140" height="180" rx="10" fill="#F9FAFB" />
+
+      {/* Resume Lines */}
+      <rect x="206" y="182" width="100" height="10" rx="5" fill="#4B5563" />
+      <rect x="206" y="206" width="80" height="10" rx="5" fill="#4B5563" />
+      <rect x="206" y="230" width="90" height="10" rx="5" fill="#4B5563" />
+      <rect x="206" y="254" width="70" height="10" rx="5" fill="#4B5563" />
+
+      {/* Check Mark */}
+      <path
+        d="M220 298L244 322L292 272"
+        stroke="#22C55E"
+        strokeWidth="14"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
-      <circle cx="46" cy="42" r="4" fill="#34d399" opacity="0.85" />
     </svg>
   );
 }

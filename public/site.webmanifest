@@ -1,16 +1,22 @@
 {
-  "name": "Hackora",
+  "name": "Hackora - Smart ATS Resume Builder",
   "short_name": "Hackora",
   "description": "Smart ATS Resume Builder - Create professional resumes that pass applicant tracking systems",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",
-  "theme_color": "#0f172a",
+  "theme_color": "#0F2A44",
   "icons": [
     {
       "src": "/icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
   ]
 }
