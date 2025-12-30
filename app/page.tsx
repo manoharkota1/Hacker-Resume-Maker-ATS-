@@ -197,10 +197,13 @@ export default function Home() {
   };
 
   return (
-    <div className="flex h-screen h-[100dvh] flex-col bg-slate-50">
+    <div className="flex h-dvh flex-col bg-slate-50">
       {/* Top Navbar */}
-      <header className="z-40 flex h-14 md:h-16 shrink-0 items-center justify-between bg-white px-3 sm:px-4 md:px-6 shadow-sm border-b border-slate-200">
-        <Link href="/" className="flex items-center transition-transform hover:scale-[1.02] active:scale-[0.98]">
+      <header className="z-40 flex h-12 sm:h-14 md:h-16 shrink-0 items-center justify-between bg-white px-2 sm:px-3 md:px-6 shadow-sm border-b border-slate-200">
+        <Link
+          href="/"
+          className="flex items-center transition-transform hover:scale-[1.02] active:scale-[0.98]"
+        >
           <HackoraLogo size="sm" />
         </Link>
 
@@ -227,7 +230,9 @@ export default function Home() {
                 | "executive"
                 | "creative"
                 | "tech";
-              const option = allTemplateOptions.find(opt => opt.value === next);
+              const option = allTemplateOptions.find(
+                (opt) => opt.value === next
+              );
               if (option?.locked) {
                 setShowLoginModal(true);
                 return;
@@ -236,7 +241,7 @@ export default function Home() {
             }}
             showLocks={true}
           />
-          
+
           {/* Common: Header Layout */}
           <NavDropdown
             label="Header"
@@ -275,7 +280,9 @@ export default function Home() {
                   { value: "inter", label: "Inter" },
                   { value: "serif", label: "Serif" },
                 ]}
-                onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
+                onChange={(v) =>
+                  setFontFamily(v as "geist" | "inter" | "serif")
+                }
               />
               <NavDropdown
                 label="Density"
@@ -309,7 +316,9 @@ export default function Home() {
                   { value: "inter", label: "Inter" },
                   { value: "serif", label: "Serif" },
                 ]}
-                onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
+                onChange={(v) =>
+                  setFontFamily(v as "geist" | "inter" | "serif")
+                }
               />
             </>
           )}
@@ -348,7 +357,9 @@ export default function Home() {
                 { value: "indigo", label: "Indigo" },
                 { value: "emerald", label: "Emerald" },
               ]}
-              onChange={(v) => setColorTheme(v as "slate" | "indigo" | "emerald")}
+              onChange={(v) =>
+                setColorTheme(v as "slate" | "indigo" | "emerald")
+              }
             />
           )}
 
@@ -380,11 +391,47 @@ export default function Home() {
               }`}
             >
               {saving ? (
-                <><svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10" className="opacity-25" /><path d="M4 12a8 8 0 018-8" className="opacity-75" /></svg> Saving...</>
+                <>
+                  <svg
+                    className="h-3.5 w-3.5 animate-spin"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <circle cx="12" cy="12" r="10" className="opacity-25" />
+                    <path d="M4 12a8 8 0 018-8" className="opacity-75" />
+                  </svg>{" "}
+                  Saving...
+                </>
               ) : saveSuccess ? (
-                <><svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M5 13l4 4L19 7" /></svg> Saved!</>
+                <>
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M5 13l4 4L19 7" />
+                  </svg>{" "}
+                  Saved!
+                </>
               ) : (
-                <><svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><path d="M17 21v-8H7v8" /><path d="M7 3v5h8" /></svg> Save</>
+                <>
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                    <path d="M17 21v-8H7v8" />
+                    <path d="M7 3v5h8" />
+                  </svg>{" "}
+                  Save
+                </>
               )}
             </button>
           )}
@@ -392,14 +439,36 @@ export default function Home() {
             onClick={handleExportPDF}
             className="hidden bg-slate-100 hover:bg-slate-200 px-3 md:px-4 py-2 text-xs font-semibold text-slate-700 transition-all duration-200 sm:flex items-center gap-1.5 border border-slate-200 hover:border-slate-300"
           >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /><path d="M12 18v-6" /><path d="M9 15l3 3 3-3" /></svg>
+            <svg
+              className="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <path d="M14 2v6h6" />
+              <path d="M12 18v-6" />
+              <path d="M9 15l3 3 3-3" />
+            </svg>
             PDF
           </button>
           <button
             onClick={handleExportDOCX}
             className="hidden bg-slate-900 hover:bg-slate-800 px-3 md:px-4 py-2 text-xs font-semibold text-white transition-all duration-200 sm:flex items-center gap-1.5"
           >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /><path d="M12 18v-6" /><path d="M9 15l3 3 3-3" /></svg>
+            <svg
+              className="h-3.5 w-3.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <path d="M14 2v6h6" />
+              <path d="M12 18v-6" />
+              <path d="M9 15l3 3 3-3" />
+            </svg>
             DOCX
           </button>
 
@@ -411,7 +480,16 @@ export default function Home() {
                   href="/dashboard"
                   className="bg-emerald-50 hover:bg-emerald-100 px-3 md:px-4 py-2 text-xs font-semibold text-emerald-700 transition-all duration-200 flex items-center gap-1.5 border border-emerald-200"
                 >
-                  <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" /><path d="M9 22V12h6v10" /></svg>
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    <path d="M9 22V12h6v10" />
+                  </svg>
                   Dashboard
                 </Link>
                 <button
@@ -426,7 +504,17 @@ export default function Home() {
                 onClick={() => setShowLoginModal(true)}
                 className="hidden bg-slate-900 hover:bg-slate-800 px-4 py-2 text-xs font-semibold text-white transition-all duration-200 sm:flex items-center gap-1.5"
               >
-                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" /><path d="M10 17l5-5-5-5" /><path d="M15 12H3" /></svg>
+                <svg
+                  className="h-3.5 w-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
+                  <path d="M10 17l5-5-5-5" />
+                  <path d="M15 12H3" />
+                </svg>
                 Login
               </button>
             ))}
@@ -435,20 +523,44 @@ export default function Home() {
             onClick={() =>
               setMobileView(mobileView === "edit" ? "preview" : "edit")
             }
-            className="bg-slate-900 px-4 py-2.5 text-xs font-semibold text-white lg:hidden flex items-center gap-1.5 active:scale-[0.98] transition-all"
+            className="bg-slate-900 px-3 sm:px-4 py-2 sm:py-2.5 text-[10px] sm:text-xs font-semibold text-white lg:hidden flex items-center gap-1 sm:gap-1.5 active:scale-[0.98] transition-all"
           >
             {mobileView === "edit" ? (
-              <><svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg> Preview</>
+              <>
+                <svg
+                  className="h-3.5 sm:h-4 w-3.5 sm:w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>{" "}
+                Preview
+              </>
             ) : (
-              <><svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" /></svg> Edit</>
+              <>
+                <svg
+                  className="h-3.5 sm:h-4 w-3.5 sm:w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+                  <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                </svg>{" "}
+                Edit
+              </>
             )}
           </button>
         </div>
       </header>
 
       {/* Mobile Template Controls */}
-      <div className="flex flex-wrap items-center gap-1.5 bg-white px-3 py-2.5 border-b border-slate-200 lg:hidden">
-        <div className="flex items-center gap-1.5 flex-shrink-0">
+      <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 bg-white px-2 sm:px-3 py-2 sm:py-2.5 border-b border-slate-200 lg:hidden overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 flex-wrap">
           <MobileSelect
             value={template}
             onChange={(v) => {
@@ -458,7 +570,9 @@ export default function Home() {
                 | "executive"
                 | "creative"
                 | "tech";
-              const option = allTemplateOptions.find(opt => opt.value === next);
+              const option = allTemplateOptions.find(
+                (opt) => opt.value === next
+              );
               if (option?.locked) {
                 setShowLoginModal(true);
                 return;
@@ -468,7 +582,7 @@ export default function Home() {
             options={allTemplateOptions}
             showLocks={true}
           />
-          
+
           {/* Common: Header Layout */}
           <MobileSelect
             value={headerLayout}
@@ -493,7 +607,9 @@ export default function Home() {
               />
               <MobileSelect
                 value={fontFamily}
-                onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
+                onChange={(v) =>
+                  setFontFamily(v as "geist" | "inter" | "serif")
+                }
                 options={[
                   { value: "geist", label: "Geist" },
                   { value: "inter", label: "Inter" },
@@ -524,7 +640,9 @@ export default function Home() {
               />
               <MobileSelect
                 value={fontFamily}
-                onChange={(v) => setFontFamily(v as "geist" | "inter" | "serif")}
+                onChange={(v) =>
+                  setFontFamily(v as "geist" | "inter" | "serif")
+                }
                 options={[
                   { value: "geist", label: "Geist" },
                   { value: "inter", label: "Inter" },
@@ -560,7 +678,9 @@ export default function Home() {
           {template === "creative" && (
             <MobileSelect
               value={colorTheme}
-              onChange={(v) => setColorTheme(v as "slate" | "indigo" | "emerald")}
+              onChange={(v) =>
+                setColorTheme(v as "slate" | "indigo" | "emerald")
+              }
               options={[
                 { value: "slate", label: "Slate" },
                 { value: "indigo", label: "Indigo" },
@@ -581,29 +701,43 @@ export default function Home() {
             />
           )}
         </div>
-        <div className="flex items-center gap-1.5 flex-shrink-0 pl-1.5 border-l border-slate-200">
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 pl-1 sm:pl-1.5 border-l border-slate-200">
           {isAuthenticated && (
             <button
               onClick={handleSaveToCloud}
               disabled={saving}
-              className={`px-2.5 py-1.5 text-xs font-semibold flex items-center gap-1 transition-all ${
+              className={`px-2 sm:px-2.5 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold flex items-center gap-1 transition-all ${
                 saveSuccess
                   ? "bg-emerald-600 text-white"
                   : "bg-slate-900 text-white"
               }`}
             >
-              {saving ? <span className="animate-pulse">...</span> : saveSuccess ? "✓" : <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /></svg>}
+              {saving ? (
+                <span className="animate-pulse">...</span>
+              ) : saveSuccess ? (
+                "✓"
+              ) : (
+                <svg
+                  className="h-3 sm:h-3.5 w-3 sm:w-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                </svg>
+              )}
             </button>
           )}
           <button
             onClick={handleExportPDF}
-            className="bg-slate-100 border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition-all active:scale-95"
+            className="bg-slate-100 border border-slate-200 px-2 sm:px-2.5 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-slate-700 transition-all active:scale-95"
           >
             PDF
           </button>
           <button
             onClick={handleExportDOCX}
-            className="bg-slate-900 px-2.5 py-1.5 text-xs font-semibold text-white transition-all active:scale-95"
+            className="bg-slate-900 px-2 sm:px-2.5 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-white transition-all active:scale-95"
           >
             DOCX
           </button>
@@ -615,11 +749,15 @@ export default function Home() {
         {/* Left Sidebar - Full Width on Mobile */}
         <aside
           ref={sidebarRef}
-          style={isMounted && window.innerWidth >= 1024 ? { width: sidebarWidth } : undefined}
+          style={
+            isMounted && window.innerWidth >= 1024
+              ? { width: sidebarWidth }
+              : undefined
+          }
           className={`relative flex flex-col overflow-hidden bg-white border-r border-slate-200 transition-all duration-200 ${
             mobileView === "preview"
               ? "hidden lg:flex lg:w-auto"
-              : "flex w-full lg:w-auto"
+              : "flex w-full max-w-full lg:w-auto"
           }`}
         >
           {/* Sidebar Tabs */}
@@ -688,11 +826,27 @@ export default function Home() {
                   onClick={() => addCustomSection("Custom Section")}
                   className="w-full border-2 border-dashed border-slate-300 py-3 text-sm font-semibold text-slate-600 transition-all duration-200 hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-700 flex items-center justify-center gap-2 group"
                 >
-                  <svg className="h-4 w-4 text-slate-400 group-hover:text-emerald-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M12 5v14M5 12h14" /></svg>
+                  <svg
+                    className="h-4 w-4 text-slate-400 group-hover:text-emerald-500 transition-colors"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
                   Add Custom Section
                 </button>
                 <p className="mt-2.5 text-center text-xs text-slate-400 flex items-center justify-center gap-1">
-                  <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" /></svg>
+                  <svg
+                    className="h-3 w-3"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" />
+                  </svg>
                   Drag sections to reorder
                 </p>
               </div>
@@ -751,9 +905,13 @@ export default function Home() {
             mobileView === "edit" ? "hidden lg:block" : "block"
           }`}
         >
-          <div className="flex justify-center min-h-full py-6 px-4">
-            <div className="animate-fade-in">
-              <ResumePreview />
+          <div className="flex justify-center min-h-full py-4 sm:py-6 px-2 sm:px-4">
+            <div className="animate-fade-in w-full max-w-full lg:w-auto lg:max-w-none overflow-x-auto">
+              <div className="min-w-0 flex justify-center">
+                <div className="transform origin-top scale-[0.4] sm:scale-[0.55] md:scale-[0.7] lg:scale-100 transition-transform duration-200">
+                  <ResumePreview />
+                </div>
+              </div>
             </div>
           </div>
         </main>
@@ -863,7 +1021,15 @@ function AccordionSection({
             className="mt-5 w-full bg-slate-900 py-3 text-sm font-semibold text-white transition-all duration-200 hover:bg-slate-800 flex items-center justify-center gap-2 active:scale-[0.98]"
           >
             Save & Continue
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M9 5l7 7-7 7" /></svg>
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
@@ -932,14 +1098,28 @@ function NavDropdown({
               <span className="flex items-center justify-between gap-2">
                 <span className="flex items-center gap-2">
                   {value === opt.label && (
-                    <svg className="h-3 w-3 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3}><path d="M5 13l4 4L19 7" /></svg>
+                    <svg
+                      className="h-3 w-3 text-emerald-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                    >
+                      <path d="M5 13l4 4L19 7" />
+                    </svg>
                   )}
                   {opt.label}
                 </span>
                 {showLocks && opt.locked && (
-                  <svg className="h-3.5 w-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                    <path d="M7 11V7a5 5 0 0110 0v4"/>
+                  <svg
+                    className="h-3.5 w-3.5 text-slate-400"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0110 0v4" />
                   </svg>
                 )}
               </span>
@@ -969,12 +1149,19 @@ function MobileSelect({
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-slate-100 border border-slate-200 px-2.5 py-2 text-xs font-semibold text-slate-700 outline-none appearance-none cursor-pointer transition-all duration-200 hover:bg-slate-200 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400"
-      style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.25rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.25em 1.25em', paddingRight: '1.75rem' }}
+      className="bg-slate-100 border border-slate-200 px-1.5 sm:px-2.5 py-1.5 sm:py-2 text-[10px] sm:text-xs font-semibold text-slate-700 outline-none appearance-none cursor-pointer transition-all duration-200 hover:bg-slate-200 focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400 max-w-20 sm:max-w-none"
+      style={{
+        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+        backgroundPosition: "right 0.15rem center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "1rem 1rem",
+        paddingRight: "1.25rem",
+      }}
     >
       {options.map((opt) => (
         <option key={opt.value} value={opt.value}>
-          {opt.label}{showLocks && opt.locked ? ' 🔒' : ''}
+          {opt.label}
+          {showLocks && opt.locked ? " 🔒" : ""}
         </option>
       ))}
     </select>
