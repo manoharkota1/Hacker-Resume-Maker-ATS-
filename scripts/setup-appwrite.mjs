@@ -208,6 +208,43 @@ async function ensureCollection(dbId, collectionId, name) {
   }
 }
 
+// Special collection for shared resumes with public read access
+async function ensurePublicReadCollection(dbId, collectionId, name) {
+  try {
+    const existing = await request(
+      "GET",
+      `/databases/${encodeURIComponent(dbId)}/collections/${encodeURIComponent(
+        collectionId
+      )}`
+    );
+    return existing.$id;
+  } catch (err) {
+    if (err.status !== 404) throw err;
+
+    // Allow public read (any user can view shared resumes)
+    // But only authenticated users can create/update/delete
+    const permissions = [
+      'create("users")',
+      'read("any")',
+      'update("users")',
+      'delete("users")',
+    ];
+
+    const created = await request(
+      "POST",
+      `/databases/${encodeURIComponent(dbId)}/collections`,
+      {
+        collectionId,
+        name,
+        permissions,
+        documentSecurity: true,
+        enabled: true,
+      }
+    );
+    return created.$id;
+  }
+}
+
 async function ensureStringAttribute(dbId, collectionId, key, size, required) {
   try {
     await request(
@@ -344,7 +381,8 @@ async function main() {
   const dbId = await ensureDatabase();
   await ensureCollection(dbId, resumesCollectionId, resumesCollectionName);
   await ensureCollection(dbId, usersCollectionId, usersCollectionName);
-  await ensureCollection(
+  // Use public read collection for shared resumes so anyone can view
+  await ensurePublicReadCollection(
     dbId,
     sharedResumesCollectionId,
     sharedResumesCollectionName

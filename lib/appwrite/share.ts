@@ -1,6 +1,7 @@
 "use client";
 
 import { databases, ID, Query, APPWRITE_DATABASE_ID } from "./config";
+import { Permission, Role } from "appwrite";
 import { Resume } from "@/types/resume";
 
 // Shared resumes collection ID
@@ -69,7 +70,13 @@ export async function createShareLink(
         showDividers: settings.showDividers,
         colorTheme: settings.colorTheme,
         viewCount: 0,
-      }
+      },
+      // Document permissions - allow anyone to read, only owner to modify
+      [
+        Permission.read(Role.any()),
+        Permission.update(Role.user(userId)),
+        Permission.delete(Role.user(userId)),
+      ]
     );
 
     return shareId;

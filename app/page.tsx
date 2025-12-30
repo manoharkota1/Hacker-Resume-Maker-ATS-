@@ -30,6 +30,7 @@ export default function Home() {
   const [sharing, setSharing] = useState(false);
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>("personal");
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
   const [sidebarTab, setSidebarTab] = useState<"edit" | "ai" | "ats">("edit");
@@ -232,6 +233,8 @@ export default function Home() {
   const copyShareLink = async () => {
     if (shareLink) {
       await navigator.clipboard.writeText(shareLink);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
     }
   };
 
@@ -1070,19 +1073,40 @@ export default function Home() {
               />
               <button
                 onClick={copyShareLink}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0"
+                className={`${
+                  linkCopied
+                    ? "bg-emerald-600"
+                    : "bg-indigo-600 hover:bg-indigo-700"
+                } text-white px-4 py-2.5 text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0`}
               >
-                <svg
-                  className="w-4 h-4"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
-                </svg>
-                Copy
+                {linkCopied ? (
+                  <>
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path d="M5 13l4 4L19 7" />
+                    </svg>
+                    Copied!
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="w-4 h-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                      <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                    </svg>
+                    Copy
+                  </>
+                )}
               </button>
             </div>
 
