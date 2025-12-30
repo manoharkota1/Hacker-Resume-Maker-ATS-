@@ -58,7 +58,14 @@ export default function SharedResumePage() {
             | "creative"
             | "tech"
         );
-        setFontFamily(data.settings.fontFamily as "geist" | "inter" | "serif");
+        setFontFamily(
+          data.settings.fontFamily as
+            | "geist"
+            | "inter"
+            | "serif"
+            | "roboto"
+            | "source"
+        );
         setDensity(data.settings.density as "cozy" | "compact");
         setHeaderLayout(
           data.settings.headerLayout as "left" | "center" | "split"

@@ -356,10 +356,14 @@ export default function Home() {
                 options={[
                   { value: "geist", label: "Geist" },
                   { value: "inter", label: "Inter" },
+                  { value: "roboto", label: "Roboto" },
+                  { value: "source", label: "Source Sans" },
                   { value: "serif", label: "Serif" },
                 ]}
                 onChange={(v) =>
-                  setFontFamily(v as "geist" | "inter" | "serif")
+                  setFontFamily(
+                    v as "geist" | "inter" | "serif" | "roboto" | "source"
+                  )
                 }
               />
             </>
@@ -687,11 +691,15 @@ export default function Home() {
               <MobileSelect
                 value={fontFamily}
                 onChange={(v) =>
-                  setFontFamily(v as "geist" | "inter" | "serif")
+                  setFontFamily(
+                    v as "geist" | "inter" | "serif" | "roboto" | "source"
+                  )
                 }
                 options={[
                   { value: "geist", label: "Geist" },
                   { value: "inter", label: "Inter" },
+                  { value: "roboto", label: "Roboto" },
+                  { value: "source", label: "Source" },
                   { value: "serif", label: "Serif" },
                 ]}
               />
@@ -720,11 +728,15 @@ export default function Home() {
               <MobileSelect
                 value={fontFamily}
                 onChange={(v) =>
-                  setFontFamily(v as "geist" | "inter" | "serif")
+                  setFontFamily(
+                    v as "geist" | "inter" | "serif" | "roboto" | "source"
+                  )
                 }
                 options={[
                   { value: "geist", label: "Geist" },
                   { value: "inter", label: "Inter" },
+                  { value: "roboto", label: "Roboto" },
+                  { value: "source", label: "Source" },
                   { value: "serif", label: "Serif" },
                 ]}
               />

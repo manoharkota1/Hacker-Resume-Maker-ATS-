@@ -23,7 +23,7 @@ export type TemplateId =
   | "executive"
   | "creative"
   | "tech";
-type FontFamily = "geist" | "inter" | "serif";
+type FontFamily = "geist" | "inter" | "serif" | "roboto" | "source";
 type FontSize = "sm" | "md" | "lg";
 type LineSpacing = "normal" | "relaxed" | "loose";
 type ColorTheme = "slate" | "indigo" | "emerald";

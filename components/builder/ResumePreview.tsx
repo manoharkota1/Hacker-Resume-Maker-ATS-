@@ -1,6 +1,13 @@
 "use client";
 
-import React, { ReactNode, useMemo, useRef, useEffect, useState, useCallback } from "react";
+import React, {
+  ReactNode,
+  useMemo,
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
 import { Resume, SectionOrderItem } from "@/types/resume";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 import { useAuth } from "@/lib/appwrite/auth";
@@ -35,7 +42,8 @@ function A4Page({
         height: `${A4_HEIGHT_PX}px`,
         overflow: "hidden",
         marginBottom: isLast ? "0" : "24px",
-        boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05)",
+        boxShadow:
+          "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.05)",
         borderRadius: "2px",
         pageBreakAfter: isLast ? "auto" : "always",
       }}
@@ -43,7 +51,7 @@ function A4Page({
       {children}
       {/* Page number indicator - only show if enabled and more than 1 page */}
       {showPageNumbers && totalPages > 1 && (
-        <div 
+        <div
           className="absolute text-xs text-slate-400 print:text-slate-500"
           style={{
             bottom: `${PAGE_MARGIN_PX / 2}px`,
@@ -89,12 +97,12 @@ export function ResumePreview() {
   const calculatePages = useCallback(() => {
     if (measureRef.current) {
       const contentHeight = measureRef.current.scrollHeight;
-      
+
       // Only show additional pages if content truly exceeds first page
       // Use generous buffer to prevent false positives
       const usableHeight = CONTENT_HEIGHT_PX;
       const buffer = 20; // pixels tolerance
-      
+
       if (contentHeight <= usableHeight + buffer) {
         setPageCount(1);
       } else {
@@ -109,13 +117,13 @@ export function ResumePreview() {
   useEffect(() => {
     // Initial calculation
     calculatePages();
-    
+
     // Recalculate after fonts load
     const timer = setTimeout(calculatePages, 150);
-    
+
     // Also recalculate on window resize
     window.addEventListener("resize", calculatePages);
-    
+
     return () => {
       clearTimeout(timer);
       window.removeEventListener("resize", calculatePages);
@@ -212,7 +220,10 @@ export function ResumePreview() {
       {/* Page numbers toggle - only show if multiple pages */}
       {pageCount > 1 && (
         <div className="flex items-center gap-2 text-sm text-slate-600 no-print">
-          <label htmlFor="showPageNumbers" className="cursor-pointer select-none">
+          <label
+            htmlFor="showPageNumbers"
+            className="cursor-pointer select-none"
+          >
             Show page numbers
           </label>
           <button
@@ -714,15 +725,17 @@ function getStylePreset({
   lineSpacing,
   colorTheme,
 }: {
-  fontFamily: "geist" | "inter" | "serif";
+  fontFamily: "geist" | "inter" | "serif" | "roboto" | "source";
   fontSize: "sm" | "md" | "lg";
   lineSpacing: "normal" | "relaxed" | "loose";
   colorTheme: "slate" | "indigo" | "emerald";
 }) {
   const fontMap = {
     geist: "var(--font-geist-sans), system-ui, -apple-system, sans-serif",
-    inter: "Inter, var(--font-geist-sans), system-ui, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
+    inter: "var(--font-inter), system-ui, sans-serif",
+    serif: "var(--font-lora), Georgia, 'Times New Roman', serif",
+    roboto: "var(--font-roboto), Arial, sans-serif",
+    source: "var(--font-source-sans), system-ui, sans-serif",
   };
 
   const sizeMap = {
@@ -906,10 +919,7 @@ function ClassicTemplate({
 
   return (
     <div
-      className={clsx(
-        "w-full bg-white",
-        stylePreset.baseText
-      )}
+      className={clsx("w-full bg-white", stylePreset.baseText)}
       style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
     >
       {/* Header */}
@@ -1004,10 +1014,13 @@ function ExecutiveTemplate({
             </h2>
             <div className="space-y-4">
               {resume.experience.map((exp) => (
-                <div key={exp.id} className={clsx(
-                  "pb-3",
-                  showDividers && "border-b border-slate-200"
-                )}>
+                <div
+                  key={exp.id}
+                  className={clsx(
+                    "pb-3",
+                    showDividers && "border-b border-slate-200"
+                  )}
+                >
                   <div className="flex justify-between items-baseline">
                     <p className="text-base font-bold text-slate-900">
                       {exp.title}
@@ -1045,7 +1058,9 @@ function ExecutiveTemplate({
             <div className="space-y-1">
               {resume.skills.map((group) => (
                 <p key={group.label} className="text-sm text-slate-700">
-                  <span className="font-bold text-slate-900">{group.label}:</span>{" "}
+                  <span className="font-bold text-slate-900">
+                    {group.label}:
+                  </span>{" "}
                   {group.items.join(" | ")}
                 </p>
               ))}
@@ -1083,10 +1098,12 @@ function ExecutiveTemplate({
       style={{ fontFamily: "'Amazon Ember', Arial, sans-serif" }}
     >
       {/* Header - Amazon style: clean, direct, no fluff */}
-      <header className={clsx(
-        "mb-5 pb-4",
-        showDividers && "border-b-2 border-[#232F3E]"
-      )}>
+      <header
+        className={clsx(
+          "mb-5 pb-4",
+          showDividers && "border-b-2 border-[#232F3E]"
+        )}
+      >
         <div
           className={clsx(
             isSplit ? "flex items-start justify-between" : "",
@@ -1275,8 +1292,12 @@ function CreativeTemplate({
         )}
       >
         <div className={clsx(isCenter && "text-center", isSplit && "w-[60%]")}>
-          <h1 className="text-3xl font-bold text-slate-900">{resume.personal.name}</h1>
-          <p className="mt-1 text-base text-[#0668E1] font-medium">{resume.personal.title}</p>
+          <h1 className="text-3xl font-bold text-slate-900">
+            {resume.personal.name}
+          </h1>
+          <p className="mt-1 text-base text-[#0668E1] font-medium">
+            {resume.personal.title}
+          </p>
         </div>
         {contactLinks.length > 0 && (
           <div
@@ -1301,7 +1322,10 @@ function CreativeTemplate({
                   {item.label}
                 </a>
               ) : (
-                <span key={item.label} className={clsx("text-slate-600", !isCenter && "block")}>
+                <span
+                  key={item.label}
+                  className={clsx("text-slate-600", !isCenter && "block")}
+                >
                   {item.label}
                 </span>
               )
@@ -1376,10 +1400,7 @@ function TechTemplate({
                 </p>
                 <ul className="mt-2 space-y-1">
                   {exp.bullets.map((b, idx) => (
-                    <li
-                      key={idx}
-                      className="flex gap-2 text-sm text-slate-600"
-                    >
+                    <li key={idx} className="flex gap-2 text-sm text-slate-600">
                       <span className="text-emerald-500">→</span>
                       <span>{b}</span>
                     </li>
@@ -1399,14 +1420,18 @@ function TechTemplate({
             <div className="space-y-2">
               {resume.skills.map((group) => (
                 <div key={group.label}>
-                  <span className="text-xs font-bold text-slate-500 uppercase">{group.label}: </span>
+                  <span className="text-xs font-bold text-slate-500 uppercase">
+                    {group.label}:{" "}
+                  </span>
                   <span className="text-sm">
                     {group.items.map((skill, idx) => (
                       <span key={idx}>
                         <code className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-xs">
                           {skill}
                         </code>
-                        {idx < group.items.length - 1 && <span className="text-slate-300 mx-1">•</span>}
+                        {idx < group.items.length - 1 && (
+                          <span className="text-slate-300 mx-1">•</span>
+                        )}
                       </span>
                     ))}
                   </span>
@@ -1511,7 +1536,10 @@ function TechTemplate({
                   {item.label}
                 </a>
               ) : (
-                <span key={item.label} className={clsx("text-slate-600", !isCenter && "block")}>
+                <span
+                  key={item.label}
+                  className={clsx("text-slate-600", !isCenter && "block")}
+                >
                   {item.label}
                 </span>
               )
