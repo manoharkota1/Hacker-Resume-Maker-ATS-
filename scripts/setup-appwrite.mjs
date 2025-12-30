@@ -92,6 +92,11 @@ const usersCollectionId =
     args.usersCollectionId ||
       process.env.NEXT_PUBLIC_APPWRITE_USERS_COLLECTION_ID
   ) || "users";
+const sharedResumesCollectionId =
+  cleanEnvValue(
+    args.sharedResumesCollectionId ||
+      process.env.NEXT_PUBLIC_APPWRITE_SHARED_RESUMES_COLLECTION_ID
+  ) || "shared-resumes";
 const bucketId =
   cleanEnvValue(
     args.bucketId || process.env.NEXT_PUBLIC_APPWRITE_STORAGE_BUCKET_ID
@@ -100,6 +105,8 @@ const bucketId =
 const databaseName = args.databaseName || "Resume Builder";
 const resumesCollectionName = args.resumesCollectionName || "Resumes";
 const usersCollectionName = args.usersCollectionName || "Users";
+const sharedResumesCollectionName =
+  args.sharedResumesCollectionName || "Shared Resumes";
 const bucketName = args.bucketName || "Resume Files";
 
 const writeEnv = args.writeEnv !== "false"; // default true
@@ -241,6 +248,32 @@ async function ensureBooleanAttribute(dbId, collectionId, key, required) {
   }
 }
 
+async function ensureIntegerAttribute(
+  dbId,
+  collectionId,
+  key,
+  required,
+  defaultValue
+) {
+  try {
+    await request(
+      "POST",
+      `/databases/${encodeURIComponent(dbId)}/collections/${encodeURIComponent(
+        collectionId
+      )}/attributes/integer`,
+      {
+        key,
+        required,
+        array: false,
+        default: defaultValue,
+      }
+    );
+  } catch (err) {
+    if (err.status === 409 || err.status === 400) return;
+    throw err;
+  }
+}
+
 async function ensureIndex(dbId, collectionId, key, type, attributes) {
   try {
     await request(
@@ -311,6 +344,11 @@ async function main() {
   const dbId = await ensureDatabase();
   await ensureCollection(dbId, resumesCollectionId, resumesCollectionName);
   await ensureCollection(dbId, usersCollectionId, usersCollectionName);
+  await ensureCollection(
+    dbId,
+    sharedResumesCollectionId,
+    sharedResumesCollectionName
+  );
 
   // Resumes schema
   await ensureStringAttribute(dbId, resumesCollectionId, "userId", 255, true);
@@ -323,6 +361,83 @@ async function main() {
   await ensureStringAttribute(dbId, usersCollectionId, "email", 255, true);
   await ensureStringAttribute(dbId, usersCollectionId, "name", 255, false);
   await ensureStringAttribute(dbId, usersCollectionId, "plan", 32, false);
+
+  // Shared Resumes schema
+  await ensureStringAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "shareId",
+    32,
+    true
+  );
+  await ensureStringAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "userId",
+    255,
+    true
+  );
+  await ensureStringAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "data",
+    100000,
+    true
+  );
+  await ensureStringAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "template",
+    32,
+    true
+  );
+  await ensureStringAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "fontFamily",
+    32,
+    true
+  );
+  await ensureStringAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "density",
+    32,
+    true
+  );
+  await ensureStringAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "headerLayout",
+    32,
+    true
+  );
+  await ensureBooleanAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "showDividers",
+    true
+  );
+  await ensureStringAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "colorTheme",
+    32,
+    true
+  );
+  await ensureIntegerAttribute(
+    dbId,
+    sharedResumesCollectionId,
+    "viewCount",
+    false,
+    0
+  );
+  await ensureIndex(dbId, sharedResumesCollectionId, "shareId_idx", "key", [
+    "shareId",
+  ]);
+  await ensureIndex(dbId, sharedResumesCollectionId, "userId_idx", "key", [
+    "userId",
+  ]);
 
   const finalBucketId = createBucket ? await ensureBucket() : "";
 
@@ -346,6 +461,11 @@ async function main() {
       "NEXT_PUBLIC_APPWRITE_USERS_COLLECTION_ID",
       usersCollectionId
     );
+    updated = upsertEnv(
+      updated,
+      "NEXT_PUBLIC_APPWRITE_SHARED_RESUMES_COLLECTION_ID",
+      sharedResumesCollectionId
+    );
 
     if (createBucket) {
       updated = upsertEnv(
@@ -367,6 +487,7 @@ async function main() {
   console.log(`- Database ID: ${dbId}`);
   console.log(`- Resumes Collection ID: ${resumesCollectionId}`);
   console.log(`- Users Collection ID: ${usersCollectionId}`);
+  console.log(`- Shared Resumes Collection ID: ${sharedResumesCollectionId}`);
   console.log(`- Bucket ID: ${createBucket ? bucketId : "(skipped)"}`);
   console.log(
     writeEnv ? "- Updated: .env.local" : "- .env.local update skipped"

@@ -19,13 +19,17 @@ import { useAuth } from "@/lib/appwrite/auth";
 import { useResumeStore } from "@/lib/state/useResumeStore";
 import { useResumeStorage } from "@/lib/appwrite/hooks";
 import { exportToPDF, exportToDOCX } from "@/lib/export/exportResume";
+import { createShareLink } from "@/lib/appwrite/share";
 
 export default function Home() {
-  const { isAuthenticated, logout, loading: authLoading } = useAuth();
+  const { isAuthenticated, user, logout, loading: authLoading } = useAuth();
   const { saveResume } = useResumeStorage();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [showShareModal, setShowShareModal] = useState(false);
   const [openSection, setOpenSection] = useState<string | null>("personal");
   const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
   const [sidebarTab, setSidebarTab] = useState<"edit" | "ai" | "ats">("edit");
@@ -193,6 +197,41 @@ export default function Home() {
       console.error("Failed to save:", err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleShare = async () => {
+    if (!isAuthenticated || !user) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    setSharing(true);
+    try {
+      const shareId = await createShareLink(user.$id, resume, {
+        template,
+        fontFamily,
+        density,
+        headerLayout,
+        showDividers,
+        colorTheme,
+      });
+
+      if (shareId) {
+        const link = `${window.location.origin}/share/${shareId}`;
+        setShareLink(link);
+        setShowShareModal(true);
+      }
+    } catch (err) {
+      console.error("Failed to create share link:", err);
+    } finally {
+      setSharing(false);
+    }
+  };
+
+  const copyShareLink = async () => {
+    if (shareLink) {
+      await navigator.clipboard.writeText(shareLink);
     }
   };
 
@@ -379,6 +418,43 @@ export default function Home() {
 
         {/* Export & Mobile Toggle */}
         <div className="flex items-center gap-1.5 sm:gap-2">
+          {/* Share Button */}
+          <button
+            onClick={handleShare}
+            disabled={sharing}
+            className="hidden bg-indigo-600 hover:bg-indigo-700 px-3 md:px-4 py-2 text-xs font-semibold text-white transition-all duration-200 sm:flex items-center gap-1.5"
+          >
+            {sharing ? (
+              <>
+                <svg
+                  className="h-3.5 w-3.5 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <circle cx="12" cy="12" r="10" className="opacity-25" />
+                  <path d="M4 12a8 8 0 018-8" className="opacity-75" />
+                </svg>
+                Sharing...
+              </>
+            ) : (
+              <>
+                <svg
+                  className="h-3.5 w-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+                  <polyline points="16,6 12,2 8,6" />
+                  <line x1="12" y1="2" x2="12" y2="15" />
+                </svg>
+                Share
+              </>
+            )}
+          </button>
           {/* Save to Cloud Button */}
           {isAuthenticated && (
             <button
@@ -702,6 +778,28 @@ export default function Home() {
           )}
         </div>
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 pl-1 sm:pl-1.5 border-l border-slate-200">
+          {/* Mobile Share Button */}
+          <button
+            onClick={handleShare}
+            disabled={sharing}
+            className="bg-indigo-600 px-2 sm:px-2.5 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-white flex items-center gap-1 transition-all active:scale-95"
+          >
+            {sharing ? (
+              <span className="animate-pulse">...</span>
+            ) : (
+              <svg
+                className="h-3 sm:h-3.5 w-3 sm:w-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+                <polyline points="16,6 12,2 8,6" />
+                <line x1="12" y1="2" x2="12" y2="15" />
+              </svg>
+            )}
+          </button>
           {isAuthenticated && (
             <button
               onClick={handleSaveToCloud}
@@ -922,6 +1020,127 @@ export default function Home() {
         isOpen={showLoginModal}
         onClose={() => setShowLoginModal(false)}
       />
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-fade-in">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <svg
+                  className="w-5 h-5 text-indigo-600"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8" />
+                  <polyline points="16,6 12,2 8,6" />
+                  <line x1="12" y1="2" x2="12" y2="15" />
+                </svg>
+                Share Resume
+              </h2>
+              <button
+                onClick={() => setShowShareModal(false)}
+                className="text-slate-400 hover:text-slate-600 transition-colors"
+              >
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <p className="text-sm text-slate-600 mb-4">
+              Anyone with this link can view your resume. Share it with
+              recruiters or on social media!
+            </p>
+
+            <div className="flex items-center gap-2 mb-4">
+              <input
+                type="text"
+                readOnly
+                value={shareLink || ""}
+                className="flex-1 bg-slate-100 border border-slate-200 rounded px-3 py-2.5 text-sm text-slate-700 font-mono truncate"
+              />
+              <button
+                onClick={copyShareLink}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2.5 text-sm font-semibold transition-all flex items-center gap-1.5 shrink-0"
+              >
+                <svg
+                  className="w-4 h-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" />
+                </svg>
+                Copy
+              </button>
+            </div>
+
+            <div className="flex items-center gap-3 pt-3 border-t border-slate-200">
+              <span className="text-xs text-slate-500">Share on:</span>
+              <a
+                href={`https://twitter.com/intent/tweet?text=Check out my resume!&url=${encodeURIComponent(
+                  shareLink || ""
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-blue-500 transition-colors"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </a>
+              <a
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+                  shareLink || ""
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-slate-400 hover:text-blue-600 transition-colors"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+              </a>
+              <a
+                href={`mailto:?subject=Check out my resume&body=${encodeURIComponent(
+                  shareLink || ""
+                )}`}
+                className="text-slate-400 hover:text-emerald-600 transition-colors"
+              >
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
